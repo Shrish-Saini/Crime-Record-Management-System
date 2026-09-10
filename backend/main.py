@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 from database import engine
 from routes.cases import router as cases_router
+from routes.resources import case_criminals_router, router as resources_router
 
 
 app = FastAPI(
@@ -13,6 +17,14 @@ app = FastAPI(
 
 
 app.include_router(cases_router)
+app.include_router(resources_router)
+app.include_router(case_criminals_router)
+
+
+@app.exception_handler(RequestValidationError)
+async def request_validation_error_handler(request: Request, exc: RequestValidationError):
+    """Keep client input errors consistent across the API."""
+    return JSONResponse(status_code=400, content={"detail": jsonable_encoder(exc.errors())})
 
 
 @app.get("/")
