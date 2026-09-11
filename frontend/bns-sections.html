@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CRMS | BNS Sections</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body class="bns-page">
+
+<div class="app-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+    <img
+        src="assets/crms-logo.png"
+        alt="CRMS Logo"
+        style="width: 150px; height: auto; display: block;"
+    >
+</div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html"
+               class="nav-item">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                    </svg>
+                </span>
+
+                Dashboard
+
+            </a>
+
+
+            <a href="cases.html"
+               class="nav-item">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 6h16"></path>
+                        <path d="M4 12h16"></path>
+                        <path d="M4 18h16"></path>
+                    </svg>
+                </span>
+
+                Cases
+
+            </a>
+
+
+            <a href="investigations.html"
+               class="nav-item">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="6"></circle>
+                        <path d="m16 16 4 4"></path>
+                    </svg>
+                </span>
+
+                Investigations
+
+            </a>
+
+
+            <a href="evidence.html"
+               class="nav-item">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="6" y="3" width="12" height="18" rx="2"></rect>
+                        <path d="M9 7h6"></path>
+                        <path d="M9 11h6"></path>
+                        <path d="M9 15h4"></path>
+                    </svg>
+                </span>
+
+                Evidence
+
+            </a>
+
+
+            <a href="courts.html"
+               class="nav-item">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 20h16"></path>
+                        <path d="M6 17h12"></path>
+                        <path d="M7 10h10"></path>
+                        <path d="M12 4v13"></path>
+                        <path d="m5 8 7-4 7 4"></path>
+                    </svg>
+                </span>
+
+                Courts
+
+            </a>
+
+
+            <a href="bns-sections.html"
+               class="nav-item active">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 3h9l4 4v14H6z"></path>
+                        <path d="M15 3v5h5"></path>
+                        <path d="M9 12h6"></path>
+                        <path d="M9 16h6"></path>
+                    </svg>
+                </span>
+
+                BNS Sections
+
+            </a>
+
+
+            <a href="reports.html"
+               class="nav-item">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 19V5"></path>
+                        <path d="M4 19h16"></path>
+                        <path d="M8 16v-5"></path>
+                        <path d="M12 16V8"></path>
+                        <path d="M16 16v-9"></path>
+                    </svg>
+                </span>
+
+                Reports
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="index.html"
+               class="nav-item">
+
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 17l5-5-5-5"></path>
+                        <path d="M15 12H3"></path>
+                        <path d="M21 4v16"></path>
+                    </svg>
+                </span>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <header class="page-header">
+
+            <div>
+
+                <h1>BNS Sections</h1>
+
+                <p>
+                    Browse the Bharatiya Nyaya Sanhita section records.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= SEARCH ================= -->
+
+        <section class="filter-card">
+
+            <div class="search-box">
+
+                <span class="search-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="m16 16 5 5"></path>
+                    </svg>
+                </span>
+
+                <input
+                    type="text"
+                    id="bnsSearch"
+                    placeholder="Search section number, title, chapter or description..."
+                    autocomplete="off">
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= BNS TABLE ================= -->
+
+        <section class="content-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>All BNS Sections</h2>
+
+                    <p>
+                        Bharatiya Nyaya Sanhita section records
+                    </p>
+
+                </div>
+
+                <span id="bnsCount"
+                      class="record-count">
+                    0 Sections
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="cases-table bns-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Section</th>
+
+                            <th>Title</th>
+
+                            <th>Chapter</th>
+
+                            <th>Chapter Subtype</th>
+
+                            <th>Description</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="bnsTableBody">
+
+                        <tr>
+
+                            <td colspan="5"
+                                style="text-align:center; padding:30px;">
+
+                                Loading BNS sections...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="js/bns-sections.js"></script>
+
+</body>
+
+</html>
