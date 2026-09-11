@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CRMS | Evidence</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="sidebar-brand">
+                <img
+                    src="assets/crms-logo.png"
+                    alt="CRMS"
+                    class="sidebar-logo"
+                >
+            </div>
+
+            <nav class="navigation">
+
+                <a href="dashboard.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="cases.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 5h16"></path>
+                            <path d="M4 9h16"></path>
+                            <path d="M4 13h16"></path>
+                            <path d="M4 17h10"></path>
+                        </svg>
+                    </span>
+                    <span>Cases</span>
+                </a>
+
+                <a href="investigations.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="11" cy="11" r="6"></circle>
+                            <path d="m16 16 4 4"></path>
+                        </svg>
+                    </span>
+                    <span>Investigations</span>
+                </a>
+
+                <a href="evidence.html" class="nav-link active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 3h12v18H6z"></path>
+                            <path d="M9 7h6"></path>
+                            <path d="M9 11h6"></path>
+                            <path d="M9 15h4"></path>
+                        </svg>
+                    </span>
+                    <span>Evidence</span>
+                </a>
+
+                <a href="courts.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 4v16"></path>
+                            <path d="M5 7h14"></path>
+                            <path d="M7 7 4 13h6L7 7z"></path>
+                            <path d="M17 7l-3 6h6l-3-6z"></path>
+                            <path d="M8 20h8"></path>
+                        </svg>
+                    </span>
+                    <span>Courts</span>
+                </a>
+
+                <a href="reports.html" class="nav-link">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 20V10"></path>
+                            <path d="M12 20V4"></path>
+                            <path d="M19 20v-7"></path>
+                            <path d="M3 20h18"></path>
+                        </svg>
+                    </span>
+                    <span>Reports</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="index.html" class="nav-link logout">
+
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M10 5H5v14h5"></path>
+                            <path d="M14 8l4 4-4 4"></path>
+                            <path d="M18 12H9"></path>
+                        </svg>
+                    </span>
+
+                    <span>Logout</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+
+                <div class="topbar-left">
+
+                    <div class="page-title">
+                        Evidence
+                    </div>
+
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="user-profile">
+
+                        <div class="avatar">
+                            A
+                        </div>
+
+                        <div class="user-details">
+                            <strong>Admin</strong>
+                            <small>Administrator</small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE CONTENT -->
+            <section class="page-content">
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h1>Evidence Records</h1>
+
+                        <p>
+                            View and manage evidence collected during investigations.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTERS -->
+                <div class="filters-card">
+
+                    <div class="search-box">
+
+                        <span class="search-icon">
+
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="11" cy="11" r="6"></circle>
+                                <path d="m16 16 4 4"></path>
+                            </svg>
+
+                        </span>
+
+                        <input
+                            type="text"
+                            id="evidenceSearch"
+                            placeholder="Search evidence..."
+                        >
+
+                    </div>
+
+
+                    <select id="evidenceStatusFilter">
+
+    <option value="all">
+        All Statuses
+    </option>
+
+    <option value="collected">
+        Collected
+    </option>
+
+    <option value="recorded">
+        Recorded
+    </option>
+
+    <option value="under examination">
+        Under Examination
+    </option>
+
+</select>
+
+                </div>
+
+
+                <!-- EVIDENCE TABLE -->
+                <div class="content-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                All Evidence
+                            </h2>
+
+                            <p>
+                                Registered evidence records
+                            </p>
+
+                        </div>
+
+                        <span id="evidenceCount">
+                            00 Evidence Records
+                        </span>
+
+                    </div>
+
+
+                    <div class="table-wrapper evidence-table-wrapper">
+
+                        <table class="evidence-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        EVIDENCE ID
+                                    </th>
+
+                                    <th>
+                                        CASE ID
+                                    </th>
+
+                                    <th>
+                                        TYPE
+                                    </th>
+
+                                    <th>
+                                        DESCRIPTION
+                                    </th>
+
+                                    <th>
+                                        COLLECTION DATE
+                                    </th>
+
+                                    <th>
+                                        LOCATION FOUND
+                                    </th>
+
+                                    <th>
+                                        STATUS
+                                    </th>
+
+                                    <th>
+                                        COLLECTED BY
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="evidenceTableBody">
+
+                                <tr>
+
+                                    <td
+                                        colspan="8"
+                                        style="text-align:center; padding:30px;"
+                                    >
+                                        Loading evidence records...
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/evidence.js"></script>
+
+</body>
+
+</html>

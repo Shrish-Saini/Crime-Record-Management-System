@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CRMS | Reports</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+    <div class="brand">
+        <img src="assets/crms-logo.png" alt="CRMS Logo">
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <a href="dashboard.html" class="nav-link">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="4" width="6" height="6"></rect>
+                    <rect x="14" y="4" width="6" height="6"></rect>
+                    <rect x="4" y="14" width="6" height="6"></rect>
+                    <rect x="14" y="14" width="6" height="6"></rect>
+                </svg>
+            </span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="cases.html" class="nav-link">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <line x1="5" y1="7" x2="19" y2="7"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <line x1="5" y1="17" x2="19" y2="17"></line>
+                </svg>
+            </span>
+            <span>Cases</span>
+        </a>
+
+        <a href="investigations.html" class="nav-link">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="10.5" cy="10.5" r="5.5"></circle>
+                    <line x1="15" y1="15" x2="20" y2="20"></line>
+                </svg>
+            </span>
+            <span>Investigations</span>
+        </a>
+
+        <a href="evidence.html" class="nav-link">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="6" y="4" width="12" height="16" rx="1"></rect>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="9" y1="12" x2="15" y2="12"></line>
+                    <line x1="9" y1="16" x2="13" y2="16"></line>
+                </svg>
+            </span>
+            <span>Evidence</span>
+        </a>
+
+        <a href="courts.html" class="nav-link">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <line x1="12" y1="4" x2="12" y2="20"></line>
+                    <line x1="6" y1="7" x2="18" y2="7"></line>
+                    <line x1="7" y1="7" x2="4" y2="13"></line>
+                    <line x1="17" y1="7" x2="20" y2="13"></line>
+                    <path d="M2.5 13h5"></path>
+                    <path d="M16.5 13h5"></path>
+                    <line x1="8" y1="20" x2="16" y2="20"></line>
+                </svg>
+            </span>
+            <span>Courts</span>
+        </a>
+
+        <a href="reports.html" class="nav-link active">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <line x1="5" y1="19" x2="5" y2="10"></line>
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <line x1="19" y1="19" x2="19" y2="8"></line>
+                </svg>
+            </span>
+            <span>Reports</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="index.html" class="nav-link">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M10 5H5v14h5"></path>
+                    <path d="M14 8l4 4-4 4"></path>
+                    <path d="M9 12h9"></path>
+                </svg>
+            </span>
+            <span>Logout</span>
+        </a>
+    </div>
+
+</aside>
+
+
+        <!-- MAIN CONTENT -->
+
+        <main class="main-content">
+
+            <!-- TOP BAR -->
+
+            <header class="topbar">
+
+                <div class="topbar-title">
+                    Reports
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="avatar">
+    A
+</div>
+
+                    <div>
+                        <strong>Admin</strong>
+                        <span>Administrator</span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE CONTENT -->
+
+            <section class="page-content">
+
+                <div class="page-header">
+
+                    <h1>Reports & Statistics</h1>
+
+                    <p>
+                        Overview of criminal cases and justice system records.
+                    </p>
+
+                </div>
+
+
+                <!-- REPORT CARDS -->
+
+                <div class="report-card-grid">
+
+                    <div class="report-card">
+                        <span class="report-label">
+                            Total Cases
+                        </span>
+
+                        <strong id="reportTotalCases">
+                            —
+                        </strong>
+
+                        <span class="report-description">
+                            Registered criminal cases
+                        </span>
+                    </div>
+
+
+                    <div class="report-card">
+                        <span class="report-label">
+                            Closed Cases
+                        </span>
+
+                        <strong id="reportClosedCases">
+                            —
+                        </strong>
+
+                        <span class="report-description">
+                            Cases completed
+                        </span>
+                    </div>
+
+
+                    <div class="report-card">
+                        <span class="report-label">
+                            Ongoing Cases
+                        </span>
+
+                        <strong id="reportOngoingCases">
+                            —
+                        </strong>
+
+                        <span class="report-description">
+                            Cases still active
+                        </span>
+                    </div>
+
+
+                    <div class="report-card">
+                        <span class="report-label">
+                            Convictions
+                        </span>
+
+                        <strong id="reportConvictions">
+                            —
+                        </strong>
+
+                        <span class="report-description">
+                            Cases with conviction outcomes
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <!-- CASE STATUS -->
+
+                <div class="report-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>Case Status</h2>
+                            <p>Current distribution of registered cases.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="report-stat-list">
+
+                        <div class="report-stat-row">
+                            <span>Closed</span>
+                            <strong id="statusClosed">—</strong>
+                        </div>
+
+                        <div class="report-progress">
+                            <div id="statusClosedProgress"></div>
+                        </div>
+
+
+                        <div class="report-stat-row">
+                            <span>Trial Ongoing</span>
+                            <strong id="statusTrial">—</strong>
+                        </div>
+
+                        <div class="report-progress">
+                            <div id="statusTrialProgress"></div>
+                        </div>
+
+
+                        <div class="report-stat-row">
+                            <span>Investigation Ongoing</span>
+                            <strong id="statusInvestigation">—</strong>
+                        </div>
+
+                        <div class="report-progress">
+                            <div id="statusInvestigationProgress"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- OUTCOMES -->
+
+                <div class="report-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>Case Outcomes</h2>
+                            <p>Recorded outcomes for completed cases.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="outcome-grid">
+
+                        <div class="outcome-item">
+                            <span>Convicted</span>
+                            <strong id="outcomeConvicted">—</strong>
+                        </div>
+
+                        <div class="outcome-item">
+                            <span>Acquitted</span>
+                            <strong id="outcomeAcquitted">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SYSTEM RECORDS -->
+
+                <div class="report-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>System Records</h2>
+                            <p>Records maintained across the criminal justice system.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="record-summary-grid">
+
+                        <div class="record-summary">
+                            <span>Investigations</span>
+                            <strong id="recordInvestigations">—</strong>
+                        </div>
+
+                        <div class="record-summary">
+                            <span>Evidence</span>
+                            <strong id="recordEvidence">—</strong>
+                        </div>
+
+                        <div class="record-summary">
+                            <span>Arrests</span>
+                            <strong id="recordArrests">—</strong>
+                        </div>
+
+                        <div class="record-summary">
+                            <span>Bail Applications</span>
+                            <strong id="recordBail">—</strong>
+                        </div>
+
+                        <div class="record-summary">
+                            <span>Charges</span>
+                            <strong id="recordCharges">—</strong>
+                        </div>
+
+                        <div class="record-summary">
+                            <span>Judgments</span>
+                            <strong id="recordJudgments">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/reports.js"></script>
+
+</body>
+</html>
