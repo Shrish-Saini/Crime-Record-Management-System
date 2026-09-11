@@ -12,7 +12,6 @@ const closeAddCaseModal = document.getElementById("closeAddCaseModal");
 const cancelAddCase = document.getElementById("cancelAddCase");
 const addCaseForm = document.getElementById("addCaseForm");
 
-const caseFir = document.getElementById("caseFir");
 const caseOfficer = document.getElementById("caseOfficer");
 const caseStatus = document.getElementById("caseStatus");
 const caseStartDate = document.getElementById("caseStartDate");
@@ -371,63 +370,187 @@ function filterCases() {
    LOAD FIR OPTIONS
    ========================================================= */
 
-async function loadFIRRecords() {
+/* =========================================================
+   LOAD POLICE STATIONS
+   ========================================================= */
+
+async function loadStationRecords() {
 
     try {
 
         const response =
-            await fetch(`${API_BASE_URL}/fir/`);
+            await fetch(
+                `${API_BASE_URL}/police-stations/?skip=0&limit=100`
+            );
 
         if (!response.ok) {
             throw new Error(
-                `FIR request failed: ${response.status}`
+                `Police station request failed: ${response.status}`
             );
         }
 
-        firRecords = await response.json();
+        const stationRecords =
+            await response.json();
 
-        if (!Array.isArray(firRecords)) {
-            firRecords = [];
-        }
+        const stations =
+            Array.isArray(stationRecords)
+                ? stationRecords
+                : [];
 
 
-        caseFir.innerHTML = `
+        caseStation.innerHTML = `
             <option value="">
-                Select FIR
+                Select police station
             </option>
         `;
 
 
-        firRecords.forEach(fir => {
+        stations.forEach(station => {
 
             const option =
                 document.createElement("option");
 
-            option.value = fir.fir_id;
+            option.value =
+                station.station_id;
 
             option.textContent =
-                `${fir.fir_number || `FIR-${fir.fir_id}`}`;
+                station.station_name ||
+                `Station #${station.station_id}`;
 
-            caseFir.appendChild(option);
+            caseStation.appendChild(option);
 
         });
 
     } catch (error) {
 
         console.error(
-            "Error loading FIR records:",
+            "Error loading police stations:",
             error
         );
 
-        caseFir.innerHTML = `
+        caseStation.innerHTML = `
             <option value="">
-                Unable to load FIR records
+                Unable to load police stations
             </option>
         `;
     }
 }
 
 
+/* =========================================================
+   LOAD COMPLAINANTS
+   ========================================================= */
+
+async function loadPersonRecords() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/persons/?skip=0&limit=100`
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                `Person request failed: ${response.status}`
+            );
+        }
+
+        const personRecords =
+            await response.json();
+
+        const persons =
+            Array.isArray(personRecords)
+                ? personRecords
+                : [];
+
+        window.personRecords = persons;
+
+
+        const datalist =
+            document.getElementById("complainantOptions");
+
+        datalist.innerHTML = "";
+
+
+        persons.forEach(person => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                person.full_name;
+
+            datalist.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Error loading complainants:",
+            error
+        );
+
+    }
+}
+/* =========================================================
+   LOAD CRIME TYPES
+   ========================================================= */
+
+async function loadCrimeRecords() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/crimes/?skip=0&limit=100`
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                `Crime request failed: ${response.status}`
+            );
+        }
+
+        const crimeRecords =
+            await response.json();
+
+        const crimes =
+            Array.isArray(crimeRecords)
+                ? crimeRecords
+                : [];
+
+        window.crimeRecords = crimes;
+
+
+        const datalist =
+            document.getElementById("crimeOptions");
+
+        datalist.innerHTML = "";
+
+
+        crimes.forEach(crime => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                crime.crime_name;
+
+            datalist.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Error loading crime types:",
+            error
+        );
+
+    }
+}
 /* =========================================================
    LOAD POLICE OFFICERS
    ========================================================= */
@@ -437,7 +560,9 @@ async function loadOfficerRecords() {
     try {
 
         const response =
-            await fetch(`${API_BASE_URL}/police-officers/`);
+            await fetch(
+                `${API_BASE_URL}/police-officers/?skip=0&limit=100`
+            );
 
         if (!response.ok) {
             throw new Error(
@@ -452,12 +577,14 @@ async function loadOfficerRecords() {
             officerRecords = [];
         }
 
+        window.officerRecords =
+            officerRecords;
 
-        caseOfficer.innerHTML = `
-            <option value="">
-                Select Officer
-            </option>
-        `;
+
+        const datalist =
+            document.getElementById("officerOptions");
+
+        datalist.innerHTML = "";
 
 
         officerRecords.forEach(officer => {
@@ -466,13 +593,10 @@ async function loadOfficerRecords() {
                 document.createElement("option");
 
             option.value =
-                officer.officer_id;
+                officer.name ||
+                `Officer #${officer.officer_id}`;
 
-            option.textContent =
-                `${officer.name || `Officer #${officer.officer_id}`}` +
-                `${officer.rank ? ` · ${officer.rank}` : ""}`;
-
-            caseOfficer.appendChild(option);
+            datalist.appendChild(option);
 
         });
 
@@ -483,18 +607,10 @@ async function loadOfficerRecords() {
             error
         );
 
-        caseOfficer.innerHTML = `
-            <option value="">
-                Unable to load officers
-            </option>
-        `;
     }
 }
 
-
-/* =========================================================
-   OPEN MODAL
-   ========================================================= */
+/* OPEN MODAL */
 
 async function openAddCaseModal() {
 
@@ -516,12 +632,12 @@ async function openAddCaseModal() {
 
 
     await Promise.all([
-        loadFIRRecords(),
-        loadOfficerRecords()
+        loadOfficerRecords(),
+        loadStationRecords(),
+        loadPersonRecords(),
+        loadCrimeRecords()
     ]);
 }
-
-
 /* =========================================================
    CLOSE MODAL
    ========================================================= */
@@ -542,120 +658,485 @@ async function createCase(event) {
     event.preventDefault();
 
 
-    addCaseMessage.textContent =
-        "Creating case...";
+    const submitButton =
+        document.getElementById("submitCaseBtn");
 
-    addCaseMessage.className =
-        "form-message";
+    const message =
+        document.getElementById("addCaseMessage");
 
 
-    const payload = {
+    message.textContent = "";
+    message.className = "form-message";
 
-        fir_id:
-            Number(caseFir.value),
 
-        case_title:
-            document
-                .getElementById("caseTitle")
-                .value
-                .trim(),
+    // =========================================
+    // GET FORM VALUES
+    // =========================================
+const firNumber =
+    document.getElementById("firNumber")
+        .value
+        .trim();
 
-        investigating_officer_id:
-            Number(caseOfficer.value),
+const crimeName =
+    document.getElementById("caseCrime")
+        .value
+        .trim();
 
-        start_date:
-            caseStartDate.value,
+const stationId =
+    Number(
+        document.getElementById("caseStation").value
+    );
 
-        status:
-            caseStatus.value,
+const complainantName =
+    document.getElementById("complainant")
+        .value
+        .trim();
 
-        outcome:
-            document
-                .getElementById("caseOutcome")
-                .value
-                .trim(),
+const incidentDate =
+    document.getElementById("incidentDate").value;
 
-        closing_date:
-            document
-                .getElementById("caseClosingDate")
-                .value ||
-            null,
+const incidentTime =
+    document.getElementById("incidentTime").value;
 
-        remarks:
-            document
-                .getElementById("caseRemarks")
-                .value
-                .trim()
+const incidentLocation =
+    document.getElementById("incidentLocation")
+        .value
+        .trim();
 
-    };
+const description =
+    document.getElementById("firDescription")
+        .value
+        .trim();
+
+
+const caseTitle =
+    document.getElementById("caseTitle")
+        .value
+        .trim();
+
+const officerName =
+    document.getElementById("caseOfficer")
+        .value
+        .trim();
+
+const caseStartDate =
+    document.getElementById("caseStartDate").value;
+
+const caseStatus =
+    document.getElementById("caseStatus").value;
+
+const outcome =
+    document.getElementById("caseOutcome").value ||
+    null;
+
+const closingDate =
+    document.getElementById("caseClosingDate").value ||
+    null;
+
+const remarks =
+    document.getElementById("caseRemarks")
+        .value
+        .trim() || null;
+
+
+/* Resolve typed names to their database IDs */
+
+const selectedCrime =
+    (window.crimeRecords || []).find(
+        crime =>
+            crime.crime_name &&
+            crime.crime_name.toLowerCase() ===
+            crimeName.toLowerCase()
+    );
+
+const selectedComplainant =
+    (window.personRecords || []).find(
+        person => {
+
+            const personName =
+                (person.full_name || "")
+                    .trim()
+                    .replace(/\s+/g, " ");
+
+            const enteredName =
+                complainantName
+                    .trim()
+                    .replace(/\s+/g, " ");
+
+            return (
+                personName.toLowerCase() ===
+                enteredName.toLowerCase()
+            );
+        }
+    );
+
+const selectedOfficer =
+    (window.officerRecords || []).find(
+        officer => {
+
+            const officerDisplayName =
+                officer.name ||
+                officer.full_name ||
+                "";
+
+            return (
+                officerDisplayName.toLowerCase() ===
+                officerName.toLowerCase()
+            );
+        }
+    );
+
+
+/* Validate selected records */
+
+if (!selectedCrime) {
+
+    message.textContent =
+        "Please select a valid crime type from the suggestions.";
+
+    message.className =
+        "form-message error";
+
+    return;
+}
+
+if (!selectedComplainant) {
+
+    message.textContent =
+        "Please select a valid complainant from the suggestions.";
+
+    message.className =
+        "form-message error";
+
+    return;
+}
+
+if (!selectedOfficer) {
+
+    message.textContent =
+        "Please select a valid investigating officer from the suggestions.";
+
+    message.className =
+        "form-message error";
+
+    return;
+}
+
+
+/* Get database IDs */
+
+const crimeId =
+    selectedCrime.crime_id;
+
+const complainantId =
+    selectedComplainant.person_id;
+
+const officerId =
+    selectedOfficer.officer_id;
+    
+    
+
+    // =========================================
+    // EXTRA VALIDATION
+    // =========================================
+
+    if (
+        !firNumber ||
+        !crimeId ||
+        !stationId ||
+        !complainantId ||
+        !incidentDate ||
+        !incidentTime ||
+        !incidentLocation ||
+        !description ||
+        !caseTitle ||
+        !officerId ||
+        !caseStartDate
+    ) {
+
+        message.textContent =
+            "Please complete all required fields.";
+
+        message.className =
+            "form-message error";
+
+        return;
+    }
+
+
+    if (
+        closingDate &&
+        closingDate < caseStartDate
+    ) {
+
+        message.textContent =
+            "Closing date cannot be earlier than the case start date.";
+
+        message.className =
+            "form-message error";
+
+        return;
+    }
+
+
+    // =========================================
+    // DISABLE BUTTON
+    // =========================================
+
+    submitButton.disabled = true;
+
+    submitButton.textContent =
+        "Registering...";
 
 
     try {
 
-        const response =
-            await fetch(`${API_BASE_URL}/cases/`, {
+        // =====================================
+        // STEP 1
+        // CREATE NEW FIR
+        // =====================================
 
-                method: "POST",
+        const firPayload = {
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            fir_number: firNumber,
 
-                body: JSON.stringify(payload)
+            station_id: stationId,
 
-            });
+            complainant_id: complainantId,
+
+            crime_id: crimeId,
+
+            incident_date: incidentDate,
+
+            incident_time: `${incidentTime}:00`,
+
+            incident_location: incidentLocation,
+
+            description: description,
+
+            registration_date: caseStartDate,
+
+            status: "Registered"
+
+        };
 
 
-        const responseData =
-            await response.json()
-                .catch(() => null);
+        console.log(
+            "Creating FIR:",
+            firPayload
+        );
 
 
-        if (!response.ok) {
+        const firResponse =
+            await fetch(
+                `${API_BASE_URL}/fir/`,
+                {
+                    method: "POST",
 
-            const errorMessage =
-                responseData?.detail
-                    ? JSON.stringify(
-                        responseData.detail
-                    )
-                    : `HTTP ${response.status}`;
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            firPayload
+                        )
+                }
+            );
+
+
+        if (!firResponse.ok) {
+
+            let errorMessage =
+                "Unable to register the FIR.";
+
+            try {
+
+                const errorData =
+                    await firResponse.json();
+
+                if (errorData.detail) {
+                    errorMessage =
+                        errorData.detail;
+                }
+
+            } catch (_) {}
 
             throw new Error(errorMessage);
         }
 
 
-        addCaseMessage.textContent =
-            "Case created successfully.";
+        const createdFir =
+            await firResponse.json();
 
-        addCaseMessage.className =
+
+        console.log(
+            "FIR created:",
+            createdFir
+        );
+
+
+        // =====================================
+        // GET GENERATED FIR ID
+        // =====================================
+
+        const firId =
+            createdFir.fir_id;
+
+
+        if (!firId) {
+
+            throw new Error(
+                "FIR was created, but no FIR ID was returned."
+            );
+
+        }
+
+
+        // =====================================
+        // STEP 2
+        // CREATE CASE
+        // =====================================
+
+        const casePayload = {
+
+            fir_id: firId,
+
+            case_title: caseTitle,
+
+            investigating_officer_id:
+                officerId,
+
+            start_date:
+                caseStartDate,
+
+            status:
+                caseStatus,
+
+            outcome:
+                outcome,
+
+            closing_date:
+                closingDate,
+
+            remarks:
+                remarks
+
+        };
+
+
+        console.log(
+            "Creating Case:",
+            casePayload
+        );
+
+
+        const caseResponse =
+            await fetch(
+                `${API_BASE_URL}/cases/`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            casePayload
+                        )
+                }
+            );
+
+
+        if (!caseResponse.ok) {
+
+            let errorMessage =
+                "FIR was registered, but the case could not be created.";
+
+            try {
+
+                const errorData =
+                    await caseResponse.json();
+
+                if (errorData.detail) {
+                    errorMessage =
+                        errorData.detail;
+                }
+
+            } catch (_) {}
+
+            throw new Error(errorMessage);
+        }
+
+
+        const createdCase =
+            await caseResponse.json();
+
+
+        console.log(
+            "Case created:",
+            createdCase
+        );
+
+
+        // =====================================
+        // SUCCESS
+        // =====================================
+
+        message.textContent =
+            "FIR and case registered successfully.";
+
+        message.className =
             "form-message success";
 
 
-        setTimeout(async () => {
+        submitButton.textContent =
+            "Registered";
+
+
+        // =====================================
+        // REFRESH CASE TABLE
+        // =====================================
+
+        await loadCases();
+
+
+        // Close after short success message
+
+        setTimeout(() => {
 
             closeModal();
 
-            await loadCases();
-
-        }, 700);
+        }, 1000);
 
 
     } catch (error) {
 
         console.error(
-            "Error creating case:",
+            "Error registering case:",
             error
         );
 
-        addCaseMessage.textContent =
-            `Unable to create case: ${error.message}`;
 
-        addCaseMessage.className =
+        message.textContent =
+            error.message ||
+            "Unable to register the case.";
+
+        message.className =
             "form-message error";
+
+
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+            "Register Case";
+
     }
+
 }
-
-
 /* =========================================================
    ESCAPE HTML
    ========================================================= */

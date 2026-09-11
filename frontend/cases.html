@@ -299,161 +299,425 @@
 
     </div>
     <!-- ADD CASE MODAL -->
+<!-- REGISTER NEW CASE MODAL -->
+
 <div class="modal-overlay" id="addCaseModal">
 
     <div class="modal-card">
 
+        <!-- HEADER -->
+
         <div class="modal-header">
 
             <div>
-                <h2>Add New Case</h2>
-                <p>Create a new case record in the database.</p>
+                <span class="modal-eyebrow">CASE MANAGEMENT</span>
+
+                <h2>Register New Case</h2>
+
+                <p>
+                    Register a new FIR and create its associated case.
+                </p>
             </div>
 
-            <button type="button" class="modal-close" id="closeAddCaseModal">
-                &times;
+            <button
+                type="button"
+                class="modal-close"
+                id="closeAddCaseModal"
+                aria-label="Close"
+            >
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 6 6 18"></path>
+                    <path d="M6 6l12 12"></path>
+                </svg>
             </button>
 
         </div>
 
+
         <form id="addCaseForm">
 
-            <div class="form-grid">
 
-                <div class="form-group">
+            <!-- =========================================
+                 FIR INFORMATION
+            ========================================== -->
 
-                    <label for="caseFir">
-                        FIR
-                    </label>
+            <div class="form-section">
 
-                    <select id="caseFir" required>
-                        <option value="">Select FIR</option>
-                    </select>
+                <div class="form-section-heading">
 
-                </div>
+                    <span class="section-number">
+                        01
+                    </span>
 
+                    <div>
 
-                <div class="form-group">
+                        <h3>FIR Information</h3>
 
-                    <label for="caseOfficer">
-                        Investigating Officer
-                    </label>
+                        <p>
+                            Enter the details of the reported incident.
+                        </p>
 
-                    <select id="caseOfficer" required>
-                        <option value="">Select Officer</option>
-                    </select>
+                    </div>
 
                 </div>
 
 
-                <div class="form-group form-group-full">
-
-                    <label for="caseTitle">
-                        Case Title
-                    </label>
-
-                    <input
-                        type="text"
-                        id="caseTitle"
-                        placeholder="Enter case title"
-                        required
-                    >
-
-                </div>
+                <div class="form-grid">
 
 
-                <div class="form-group">
+                    <!-- FIR NUMBER -->
 
-                    <label for="caseStartDate">
-                        Start Date
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="date"
-                        id="caseStartDate"
-                        required
-                    >
+                        <label for="firNumber">
+                            FIR Number <span>*</span>
+                        </label>
 
-                </div>
+                        <input
+                            type="text"
+                            id="firNumber"
+                            placeholder="e.g. FIR-GZB-2026-005"
+                            required
+                        >
 
-
-                <div class="form-group">
-
-                    <label for="caseStatus">
-                        Status
-                    </label>
-
-                    <select id="caseStatus" required>
-
-                        <option value="FIR Registered">
-                            FIR Registered
-                        </option>
-
-                        <option value="Investigation Ongoing">
-                            Investigation Ongoing
-                        </option>
-
-                        <option value="Trial Ongoing">
-                            Trial Ongoing
-                        </option>
-
-                        <option value="Closed">
-                            Closed
-                        </option>
-
-                    </select>
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <!-- CRIME -->
 
-                    <label for="caseOutcome">
-                        Outcome
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="text"
-                        id="caseOutcome"
-                        placeholder="Optional"
-                    >
+                        <label for="caseCrime">
+                            Crime Type <span>*</span>
+                        </label>
 
-                </div>
+                        <input
+    type="text"
+    id="caseCrime"
+    list="crimeOptions"
+    placeholder="Type crime type"
+    autocomplete="off"
+    required
+>
 
-
-                <div class="form-group">
-
-                    <label for="caseClosingDate">
-                        Closing Date
-                    </label>
-
-                    <input
-                        type="date"
-                        id="caseClosingDate"
-                    >
-
-                </div>
+<datalist id="crimeOptions"></datalist>
+                    </div>
 
 
-                <div class="form-group form-group-full">
+                    <!-- POLICE STATION -->
 
-                    <label for="caseRemarks">
-                        Remarks
-                    </label>
+                    <div class="form-group">
 
-                    <textarea
-                        id="caseRemarks"
-                        rows="3"
-                        placeholder="Optional remarks"
-                    ></textarea>
+                        <label for="caseStation">
+                            Police Station <span>*</span>
+                        </label>
+
+                        <select
+                            id="caseStation"
+                            required
+                        >
+
+                            <option value="">
+                                Select police station
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- COMPLAINANT -->
+
+                    <div class="form-group">
+
+                        <label for="complainant">
+                            Complainant <span>*</span>
+                        </label>
+
+                        <input
+    type="text"
+    id="complainant"
+    list="complainantOptions"
+    placeholder="Type complainant name"
+    autocomplete="off"
+    required
+>
+
+<datalist id="complainantOptions"></datalist>
+
+                    </div>
+
+
+                    <!-- INCIDENT DATE -->
+
+                    <div class="form-group">
+
+                        <label for="incidentDate">
+                            Incident Date <span>*</span>
+                        </label>
+
+                        <input
+                            type="date"
+                            id="incidentDate"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- INCIDENT TIME -->
+
+                    <div class="form-group">
+
+                        <label for="incidentTime">
+                            Incident Time <span>*</span>
+                        </label>
+
+                        <input
+                            type="time"
+                            id="incidentTime"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- INCIDENT LOCATION -->
+
+                    <div class="form-group form-group-full">
+
+                        <label for="incidentLocation">
+                            Incident Location <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="incidentLocation"
+                            placeholder="Enter where the incident occurred"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group form-group-full">
+
+                        <label for="firDescription">
+                            Incident Description <span>*</span>
+                        </label>
+
+                        <textarea
+                            id="firDescription"
+                            rows="4"
+                            placeholder="Describe the reported incident..."
+                            required
+                        ></textarea>
+
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <div class="form-message" id="addCaseMessage"></div>
+            <!-- =========================================
+                 CASE INFORMATION
+            ========================================== -->
 
+            <div class="form-section">
+
+                <div class="form-section-heading">
+
+                    <span class="section-number">
+                        02
+                    </span>
+
+                    <div>
+
+                        <h3>Case Information</h3>
+
+                        <p>
+                            Assign the newly registered case.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- CASE TITLE -->
+
+                    <div class="form-group form-group-full">
+
+                        <label for="caseTitle">
+                            Case Title <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="caseTitle"
+                            placeholder="Enter case title"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- OFFICER -->
+
+                    <div class="form-group">
+
+                        <label for="caseOfficer">
+                            Investigating Officer <span>*</span>
+                        </label>
+
+                        <input
+    type="text"
+    id="caseOfficer"
+    list="officerOptions"
+    placeholder="Type officer name"
+    autocomplete="off"
+    required
+>
+
+<datalist id="officerOptions"></datalist>
+
+                    </div>
+
+
+                    <!-- CASE STATUS -->
+
+                    <div class="form-group">
+
+                        <label for="caseStatus">
+                            Case Status <span>*</span>
+                        </label>
+
+                        <select
+                            id="caseStatus"
+                            required
+                        >
+
+                            <option value="FIR Registered">
+                                FIR Registered
+                            </option>
+
+                            <option value="Investigation Ongoing">
+                                Investigation Ongoing
+                            </option>
+
+                            <option value="Trial Ongoing">
+                                Trial Ongoing
+                            </option>
+
+                            <option value="Closed">
+                                Closed
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- START DATE -->
+
+                    <div class="form-group">
+
+                        <label for="caseStartDate">
+                            Case Start Date <span>*</span>
+                        </label>
+
+                        <input
+                            type="date"
+                            id="caseStartDate"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- OUTCOME -->
+
+                    <div class="form-group">
+
+                        <label for="caseOutcome">
+                            Outcome
+                        </label>
+
+                        <select id="caseOutcome">
+
+                            <option value="">
+                                Pending
+                            </option>
+
+                            <option value="Convicted">
+                                Convicted
+                            </option>
+
+                            <option value="Acquitted">
+                                Acquitted
+                            </option>
+
+                            <option value="Partly Convicted">
+                                Partly Convicted
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CLOSING DATE -->
+
+                    <div class="form-group">
+
+                        <label for="caseClosingDate">
+                            Closing Date
+                        </label>
+
+                        <input
+    type="date"
+    id="caseClosingDate"
+>
+
+                    </div>
+
+
+                    <!-- REMARKS -->
+
+                    <div class="form-group form-group-full">
+
+                        <label for="caseRemarks">
+                            Remarks
+                        </label>
+
+                        <textarea
+                            id="caseRemarks"
+                            rows="3"
+                            placeholder="Add any additional information..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                class="form-message"
+                id="addCaseMessage"
+            ></div>
+
+
+            <!-- ACTIONS -->
 
             <div class="modal-actions">
 
@@ -468,8 +732,9 @@
                 <button
                     type="submit"
                     class="submit-case-btn"
+                    id="submitCaseBtn"
                 >
-                    Add Case
+                    Register Case
                 </button>
 
             </div>
@@ -479,7 +744,6 @@
     </div>
 
 </div>
-
 
     
     <script src="js/cases.js"></script>
