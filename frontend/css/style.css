@@ -340,38 +340,6 @@ body {
     gap: 22px;
 }
 
-
-.notification-button {
-    width: 34px;
-    height: 34px;
-
-    border: 1px solid #e5e7eb;
-
-    border-radius: 8px;
-
-    background: white;
-
-    position: relative;
-
-    cursor: pointer;
-}
-
-
-.notification-button span {
-    position: absolute;
-
-    width: 7px;
-    height: 7px;
-
-    background: #2563eb;
-
-    border-radius: 50%;
-
-    top: 7px;
-    right: 7px;
-}
-
-
 .user-profile {
     display: flex;
 
@@ -3056,100 +3024,2371 @@ table .muted,
     display: block;
     object-fit: contain;
 }
+
 /* =========================================================
-   BNS SECTIONS SIDEBAR FIX
+   CRMS UI REDESIGN
+   Records Management / Institutional Interface
    ========================================================= */
 
-.bns-page .sidebar {
-    width: 255px;
-    min-width: 255px;
-    background: #0b1224;
-    color: #ffffff;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
+:root {
+    --crms-navy: #172333;
+    --crms-navy-dark: #101923;
+    --crms-blue: #3b638c;
+    --crms-blue-dark: #2e506f;
+
+    --crms-bg: #eef1f4;
+    --crms-white: #ffffff;
+    --crms-border: #d4d9df;
+
+    --crms-text: #202833;
+    --crms-muted: #697482;
+
+    --crms-green: #2d704b;
+    --crms-yellow: #966814;
+    --crms-red: #a34545;
 }
 
-.bns-page .sidebar-logo {
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow: hidden;
+/* ---------- GLOBAL ---------- */
+
+body {
+    font-family: Arial, Helvetica, sans-serif !important;
+    background: var(--crms-bg) !important;
+    color: var(--crms-text) !important;
 }
 
-.bns-page .sidebar-logo img {
-    width: 150px;
-    max-width: 150px;
-    height: auto;
-    display: block;
-    object-fit: contain;
+/* ---------- SIDEBAR ---------- */
+
+.sidebar {
+    width: 220px !important;
+    background: var(--crms-navy) !important;
+    box-shadow: none !important;
+    border-right: 1px solid #0c141d !important;
 }
 
-.bns-page .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 20px 15px;
+.sidebar-brand {
+    height: 88px !important;
+    padding: 0 18px !important;
+    border-bottom: 1px solid #303b47 !important;
 }
 
-.bns-page .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 13px 16px;
-    border-radius: 8px;
-    color: #aeb8cc;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: background 0.2s ease,
-                color 0.2s ease;
+.sidebar-logo {
+    width: 135px !important;
+    height: auto !important;
 }
 
-.bns-page .nav-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
+.navigation {
+    padding: 16px 10px !important;
 }
 
-.bns-page .nav-item.active {
-    background: #294b9b;
-    color: #ffffff;
+.nav-link {
+    margin: 2px 0 !important;
+    padding: 11px 12px !important;
+    border-radius: 3px !important;
+    color: #b8c1cc !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+}
+
+.nav-link:hover {
+    background: #243241 !important;
+    color: #ffffff !important;
+}
+
+.nav-link.active {
+    background: #3b638c !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.sidebar-bottom {
+    padding: 10px !important;
+    border-top: 1px solid #303b47 !important;
+}
+
+/* ---------- MAIN AREA ---------- */
+
+.main-content {
+    margin-left: 220px !important;
+    background: var(--crms-bg) !important;
+}
+
+.topbar {
+    height: 64px !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--crms-border) !important;
+    box-shadow: none !important;
+}
+
+.page-title {
+    color: #37414d !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.page-content {
+    padding: 28px !important;
+}
+
+/* ---------- PAGE HEADERS ---------- */
+
+.page-header {
+    margin-bottom: 22px !important;
+}
+
+.page-header h1 {
+    color: #202a35 !important;
+    font-size: 25px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+}
+
+.page-header p {
+    color: var(--crms-muted) !important;
+    font-size: 13px !important;
+}
+
+/* ---------- CARDS ---------- */
+
+.content-card,
+.detail-section,
+.filters-card,
+.report-section,
+.detail-card,
+.stat-card,
+.quick-card,
+.report-card {
+    background: #ffffff !important;
+    border: 1px solid var(--crms-border) !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.content-card {
+    padding: 20px !important;
+}
+
+.detail-section,
+.report-section {
+    padding: 20px !important;
+}
+
+.stat-card,
+.report-card {
+    box-shadow: none !important;
+}
+
+.stat-card:hover,
+.quick-card:hover,
+.detail-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ---------- HEADINGS ---------- */
+
+.card-header,
+.section-heading {
+    border-bottom: 1px solid var(--crms-border) !important;
+}
+
+.card-header h2,
+.section-heading h2 {
+    color: #27323d !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.card-header p,
+.section-heading p {
+    color: var(--crms-muted) !important;
+    font-size: 12px !important;
+}
+
+/* ---------- TABLES ---------- */
+
+table {
+    border-collapse: collapse !important;
+}
+
+table th {
+    background: #e7ebef !important;
+    color: #3d4752 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em !important;
+    border-bottom: 1px solid #cbd1d8 !important;
+}
+
+table td {
+    color: #39434e !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+}
+
+table tbody tr:hover td {
+    background: #f5f7f8 !important;
+}
+
+/* ---------- FILTERS ---------- */
+
+.filters-card {
+    padding: 14px !important;
+}
+
+.search-box input,
+.filters-card select {
+    height: 40px !important;
+    border: 1px solid #c8cfd7 !important;
+    border-radius: 3px !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.search-box input:focus,
+.filters-card select:focus {
+    border-color: var(--crms-blue) !important;
+    box-shadow: 0 0 0 2px rgba(59, 99, 140, 0.10) !important;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.add-case-btn,
+.submit-case-btn,
+.login-button {
+    background: var(--crms-blue) !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.add-case-btn:hover,
+.submit-case-btn:hover,
+.login-button:hover {
+    background: var(--crms-blue-dark) !important;
+    transform: none !important;
+}
+
+.cancel-btn {
+    border-radius: 3px !important;
+}
+
+/* ---------- STATISTICS ---------- */
+
+.stat-value,
+.report-card strong {
+    color: #202b37 !important;
+}
+
+.quick-card {
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.quick-card:hover {
+    border-color: #b7c0c9 !important;
+}
+
+/* ---------- STATUS LABELS ---------- */
+
+.status,
+.status.closed,
+.status.ongoing,
+.status.acquitted,
+.outcome-badge,
+.charge-status,
+.proceeding-status,
+.judgment-status,
+.bail-status {
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+/* ---------- MODALS ---------- */
+
+.modal-overlay {
+    background: rgba(18, 26, 34, 0.60) !important;
+}
+
+.modal-card {
+    border-radius: 4px !important;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.20) !important;
+}
+
+.modal-header {
+    background: #f5f6f7 !important;
+    border-bottom: 1px solid var(--crms-border) !important;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    border-radius: 3px !important;
+    border-color: #c8cfd7 !important;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--crms-blue) !important;
+    box-shadow: none !important;
+}
+
+/* ---------- CASE DETAILS ---------- */
+
+.case-detail-header h1 {
+    letter-spacing: 0 !important;
+}
+
+.timeline-marker {
+    background: var(--crms-blue) !important;
+    box-shadow: 0 0 0 2px #d5dee7 !important;
+}
+
+.person-item,
+.record-item,
+.charge-record,
+.chargesheet-record,
+.proceeding-record,
+.judgment-record,
+.sentence-record,
+.imprisonment-record,
+.arrest-record,
+.bail-record,
+.empty-record {
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.person-item:hover,
+.record-item:hover,
+.charge-record:hover,
+.chargesheet-record:hover,
+.proceeding-record:hover,
+.judgment-record:hover,
+.sentence-record:hover,
+.imprisonment-record:hover,
+.arrest-record:hover,
+.bail-record:hover {
+    background: #f5f7f8 !important;
+}
+
+/* ---------- LINKS ---------- */
+
+.case-id-link,
+.case-id-link:visited,
+.view-all,
+.back-link {
+    color: var(--crms-blue) !important;
+}
+
+.case-id-link:hover,
+.view-all:hover,
+.back-link:hover {
+    color: var(--crms-blue-dark) !important;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 700px) {
+    .sidebar {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
+/* =========================================================
+   BNS SIDEBAR LINK FIX
+   ========================================================= */
+
+.bns-page .navigation .nav-link,
+.bns-page .sidebar-bottom .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 11px !important;
+
+    padding: 11px 12px !important;
+    margin: 2px 0 !important;
+
+    color: #b8c1cc !important;
+    background: transparent !important;
+
+    text-decoration: none !important;
+
+    font-size: 13px !important;
+    font-weight: 500 !important;
+
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+.bns-page .navigation .nav-link:hover,
+.bns-page .sidebar-bottom .nav-link:hover {
+    background: #243241 !important;
+    color: #ffffff !important;
+}
+
+.bns-page .navigation .nav-link.active {
+    background: #3b638c !important;
+    color: #ffffff !important;
 }
 
 .bns-page .nav-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 19px !important;
+    height: 19px !important;
+
+    flex-shrink: 0 !important;
 }
 
 .bns-page .nav-icon svg {
-    width: 17px;
-    height: 17px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    width: 16px !important;
+    height: 16px !important;
+
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+/* =========================================================
+   DASHBOARD STATISTICS REDESIGN
+   ========================================================= */
+
+.stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
 }
 
-.bns-page .sidebar-bottom {
-    margin-top: auto;
-    padding: 15px;
+.stat-card {
+    min-height: 135px !important;
+    padding: 18px 20px !important;
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    position: relative !important;
 }
 
-.bns-page .main-content {
-    margin-left: 255px;
-    min-height: 100vh;
+.stat-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: #b9c2cc !important;
+}
+
+.stat-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 16px !important;
+}
+
+.stat-label {
+    color: #596572 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+}
+
+.stat-icon {
+    width: 28px !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid #cfd6dd !important;
+    border-radius: 3px !important;
+    background: #f4f6f8 !important;
+    color: #3b638c !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+.stat-value {
+    color: #1f2933 !important;
+    font-size: 30px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
+}
+
+.stat-description {
+    color: #7a8591 !important;
+    font-size: 12px !important;
+}
+
+/* Make the first card visually primary without making it flashy */
+.stat-card:first-child {
+    border-top: 3px solid #3b638c !important;
+}
+
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+/* =========================================================
+   DASHBOARD RECENT CASES REDESIGN
+   ========================================================= */
+
+.recent-cases {
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: 24px !important;
+
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.recent-cases .card-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    padding: 18px 20px !important;
+    margin: 0 !important;
+
+    border-bottom: 1px solid #d4d9df !important;
+}
+
+.recent-cases .card-header h2 {
+    margin: 0 !important;
+    color: #27323d !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.recent-cases .card-header p {
+    margin-top: 4px !important;
+    color: #7a8591 !important;
+    font-size: 12px !important;
+}
+
+.recent-cases .view-all {
+    color: #3b638c !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+}
+
+.recent-cases .view-all:hover {
+    color: #2e506f !important;
+}
+
+/* ---------- CASE LIST ---------- */
+
+.recent-cases .case-list {
+    width: 100% !important;
+}
+
+.recent-cases .case-item {
+    display: grid !important;
+    grid-template-columns: 42px minmax(220px, 1fr) 150px 155px !important;
+    align-items: center !important;
+
+    min-height: 68px !important;
+    padding: 0 20px !important;
+
+    border-bottom: 1px solid #e1e5e9 !important;
+    background: #ffffff !important;
+}
+
+.recent-cases .case-item:last-child {
+    border-bottom: none !important;
+}
+
+.recent-cases .case-item:hover {
+    background: #f6f8fa !important;
+}
+
+/* ---------- CASE NUMBER ---------- */
+
+.recent-cases .case-number {
+    color: #9aa4ae !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+/* ---------- CASE INFORMATION ---------- */
+
+.recent-cases .case-info {
+    min-width: 0 !important;
+}
+
+.recent-cases .case-title {
+    color: #26313c !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+.recent-cases .case-fir {
+    margin-top: 3px !important;
+    color: #8a95a0 !important;
+    font-size: 11px !important;
+}
+
+/* ---------- CRIME TYPE ---------- */
+
+.recent-cases .case-crime {
+    color: #5e6975 !important;
+    font-size: 12px !important;
+}
+
+/* ---------- STATUS ---------- */
+
+.recent-cases .case-status {
+    justify-self: end !important;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 800px) {
+    .recent-cases .case-item {
+        grid-template-columns: 35px minmax(150px, 1fr) 120px !important;
+    }
+
+    .recent-cases .case-crime {
+        display: none !important;
+    }
+}
+
+@media (max-width: 550px) {
+    .recent-cases .case-item {
+        grid-template-columns: 30px 1fr !important;
+        gap: 8px !important;
+        padding: 12px 15px !important;
+    }
+
+    .recent-cases .case-status {
+        justify-self: start !important;
+        grid-column: 2 !important;
+    }
+}
+
+.dashboard-grid .recent-cases {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+}
+/* =========================================================
+   DASHBOARD CASE STATUS REDESIGN
+   ========================================================= */
+
+.status-card {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    margin-top: 12px !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.status-card .card-header {
+    padding: 18px 20px !important;
+    margin: 0 !important;
+    border-bottom: 1px solid #d4d9df !important;
+}
+
+.status-card .card-header h2 {
+    margin: 0 !important;
+    color: #27323d !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.status-card .card-header p {
+    margin-top: 4px !important;
+    color: #7a8591 !important;
+    font-size: 12px !important;
+}
+
+/* ---------- STATUS ROWS ---------- */
+
+.status-card .status-item {
+    padding: 16px 20px !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+}
+
+.status-card .status-item-top {
+    display: grid !important;
+    grid-template-columns: 180px 1fr 45px !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 8px !important;
+}
+
+.status-card .status-item-top span {
+    color: #4f5b67 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.status-card .status-item-top strong {
+    grid-column: 3 !important;
+    text-align: right !important;
+    color: #27323d !important;
+    font-size: 13px !important;
+}
+
+/* ---------- PROGRESS ---------- */
+
+.status-card .progress {
+    grid-column: 2 !important;
+    height: 5px !important;
+    margin: 0 !important;
+    background: #e8ecf0 !important;
+    border-radius: 2px !important;
+    overflow: hidden !important;
+}
+
+.status-card .progress-bar {
+    height: 100% !important;
+    background: #3b638c !important;
+    border-radius: 2px !important;
+    transition: width 0.3s ease !important;
+}
+
+/* ---------- SUMMARY ---------- */
+
+.status-card .status-summary {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+
+    margin: 0 !important;
+    padding: 18px 20px !important;
+
+    border-top: none !important;
+}
+
+.status-card .status-summary > div {
+    padding: 0 20px !important;
+    border-right: 1px solid #dfe4e8 !important;
+}
+
+.status-card .status-summary > div:first-child {
+    padding-left: 0 !important;
+}
+
+.status-card .status-summary > div:last-child {
+    padding-right: 0 !important;
+    border-right: none !important;
+}
+
+.status-card .status-summary strong {
+    display: block !important;
+    color: #202b37 !important;
+    font-size: 22px !important;
+    line-height: 1.1 !important;
+    font-weight: 700 !important;
+}
+
+.status-card .status-summary span {
+    display: block !important;
+    margin-top: 4px !important;
+    color: #89939e !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 700px) {
+    .status-card .status-item-top {
+        grid-template-columns: 130px 1fr 35px !important;
+        gap: 10px !important;
+    }
+
+    .status-card .status-summary {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+
+    .status-card .status-summary > div {
+        padding: 0 !important;
+        border-right: none !important;
+    }
+}
+/* =========================================================
+   CASES PAGE - FILTER BAR REDESIGN
+   ========================================================= */
+
+.cases-card {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+}
+
+.filters-card {
+    display: grid !important;
+    grid-template-columns: minmax(300px, 1fr) 210px 210px !important;
+    gap: 10px !important;
+
+    width: 100% !important;
+    box-sizing: border-box !important;
+
+    margin-bottom: 14px !important;
+    padding: 12px !important;
+
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.search-box {
+    position: relative !important;
+}
+
+.search-box input {
+    width: 100% !important;
+    height: 40px !important;
+    box-sizing: border-box !important;
+
+    padding: 0 12px 0 38px !important;
+
+    border: 1px solid #c8cfd7 !important;
+    border-radius: 3px !important;
+
+    background: #ffffff !important;
+    color: #27323d !important;
+    font-size: 13px !important;
+
+    box-shadow: none !important;
+}
+
+.search-box input::placeholder {
+    color: #929ca7 !important;
+}
+
+.search-box input:focus {
+    outline: none !important;
+    border-color: #3b638c !important;
+    box-shadow: 0 0 0 2px rgba(59, 99, 140, 0.08) !important;
+}
+
+.search-icon {
+    position: absolute !important;
+    left: 13px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+
+    color: #7b8793 !important;
+    font-size: 17px !important;
+
+    pointer-events: none !important;
+}
+
+.filters-card select {
+    width: 100% !important;
+    height: 40px !important;
+    box-sizing: border-box !important;
+
+    padding: 0 12px !important;
+
+    border: 1px solid #c8cfd7 !important;
+    border-radius: 3px !important;
+
+    background: #ffffff !important;
+    color: #3e4852 !important;
+
+    font-size: 13px !important;
+    box-shadow: none !important;
+}
+
+.filters-card select:focus {
+    outline: none !important;
+    border-color: #3b638c !important;
+    box-shadow: 0 0 0 2px rgba(59, 99, 140, 0.08) !important;
+}
+
+/* ---------- TABLE CARD ---------- */
+
+.cases-card {
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.cases-card .card-header {
+    padding: 18px 20px !important;
+    margin: 0 !important;
+    border-bottom: 1px solid #d4d9df !important;
+}
+
+.cases-card .card-header h2 {
+    color: #27323d !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.cases-card .card-header p {
+    margin-top: 4px !important;
+    color: #7a8591 !important;
+    font-size: 12px !important;
+}
+/* =========================================================
+   CASES PAGE - TABLE REDESIGN
+   ========================================================= */
+
+.cases-card .table-container {
+    width: 100% !important;
+    overflow-x: auto !important;
+}
+
+.cases-table {
+    width: 100% !important;
+    min-width: 950px !important;
+    border-collapse: collapse !important;
+    table-layout: auto !important;
+}
+
+.cases-table thead th {
+    padding: 11px 14px !important;
+
+    background: #e8ecef !important;
+    color: #4a5561 !important;
+
+    border-bottom: 1px solid #cbd2d9 !important;
+
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+
+    white-space: nowrap !important;
+    text-align: left !important;
+}
+
+.cases-table tbody td {
+    padding: 13px 14px !important;
+
+    background: #ffffff !important;
+    color: #3d4752 !important;
+
+    border-bottom: 1px solid #e1e5e9 !important;
+
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+
+    vertical-align: middle !important;
+}
+
+.cases-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+.cases-table tbody tr:hover td {
+    background: #f5f7f9 !important;
+}
+
+/* ---------- CASE ID ---------- */
+
+.cases-table .case-id-link {
+    font-weight: 700 !important;
+    color: #3b638c !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+}
+
+.cases-table .case-id-link:hover {
+    color: #2e506f !important;
+    text-decoration: underline !important;
+}
+
+/* ---------- CASE TITLE ---------- */
+
+.cases-table td:nth-child(2) {
+    min-width: 180px !important;
+    color: #27323d !important;
+    font-weight: 600 !important;
+}
+
+/* ---------- FIR NUMBER ---------- */
+
+.cases-table td:nth-child(3) {
+    white-space: nowrap !important;
+    color: #65717d !important;
+    font-family: "Courier New", monospace !important;
+    font-size: 11px !important;
+}
+
+/* ---------- STATUS / OUTCOME ---------- */
+
+.cases-table .status,
+.cases-table .outcome-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 70px !important;
+    padding: 4px 7px !important;
+
+    border-radius: 3px !important;
+    box-shadow: none !important;
+
+    font-size: 10px !important;
+    font-weight: 700 !important;
+}
+
+/* ---------- CASE COUNT ---------- */
+
+.case-count {
+    color: #697582 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+}
+
+/* ---------- HEADER ACTIONS ---------- */
+
+.cases-card .card-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+/* ---------- ADD CASE BUTTON ---------- */
+
+.cases-card .add-case-btn {
+    height: 36px !important;
+    padding: 0 14px !important;
+
+    background: #3b638c !important;
+    color: #ffffff !important;
+
+    border: none !important;
+    border-radius: 3px !important;
+
+    font-size: 12px !important;
+    font-weight: 700 !important;
+
+    box-shadow: none !important;
+}
+
+.cases-card .add-case-btn:hover {
+    background: #2e506f !important;
+    transform: none !important;
+}
+/* =========================================================
+   CASE DETAILS - CASE HEADER
+   ========================================================= */
+
+.case-detail-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+
+    width: 100% !important;
+    box-sizing: border-box !important;
+
+    margin-top: 14px !important;
+    margin-bottom: 18px !important;
+    padding: 20px 22px !important;
+
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-left: 4px solid #3b638c !important;
+    border-radius: 4px !important;
+
+    box-shadow: none !important;
+}
+
+.case-detail-header .case-id-label {
+    margin-bottom: 7px !important;
+
+    color: #6f7a85 !important;
+    font-family: "Courier New", monospace !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+}
+
+.case-detail-header h1 {
+    margin: 0 !important;
+
+    color: #202a35 !important;
+    font-size: 23px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+}
+
+.case-detail-header p {
+    margin-top: 7px !important;
+
+    color: #707b87 !important;
+    font-family: "Courier New", monospace !important;
+    font-size: 11px !important;
+}
+
+/* ---------- STATUS AREA ---------- */
+
+.case-header-status {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    padding-top: 4px !important;
+}
+
+.case-header-status .status,
+.case-header-status .outcome-badge {
+    border-radius: 3px !important;
+    box-shadow: none !important;
+
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+}
+
+/* ---------- BACK LINK ---------- */
+
+.back-link {
+    display: inline-block !important;
+
+    margin-bottom: 2px !important;
+
+    color: #3b638c !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+.back-link:hover {
+    color: #2e506f !important;
+    text-decoration: underline !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 700px) {
+    .case-detail-header {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    .case-header-status {
+        padding-top: 0 !important;
+    }
+}
+/* =========================================================
+   CASE DETAILS - BASIC INFORMATION
+   ========================================================= */
+
+.detail-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0 !important;
+
+    width: 100% !important;
+    margin-bottom: 18px !important;
+
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.detail-grid .detail-card {
+    min-height: 78px !important;
+    padding: 16px 18px !important;
+
+    background: #ffffff !important;
+    border: none !important;
+    border-right: 1px solid #dfe4e8 !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+}
+
+.detail-grid .detail-card:last-child {
+    border-right: none !important;
+}
+
+.detail-grid .detail-label {
+    display: block !important;
+    margin-bottom: 7px !important;
+
+    color: #7a8590 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.detail-grid .detail-card strong {
+    display: block !important;
+
+    color: #29343f !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+}
+
+@media (max-width: 850px) {
+    .detail-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .detail-grid .detail-card:nth-child(2) {
+        border-right: none !important;
+    }
+
+    .detail-grid .detail-card:nth-child(-n+2) {
+        border-bottom: 1px solid #dfe4e8 !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .detail-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .detail-grid .detail-card {
+        border-right: none !important;
+        border-bottom: 1px solid #dfe4e8 !important;
+    }
+
+    .detail-grid .detail-card:last-child {
+        border-bottom: none !important;
+    }
+}
+/* =========================================================
+   CASE DETAILS - FIR INFORMATION
+   ========================================================= */
+
+.detail-section {
+    width: 100% !important;
+    box-sizing: border-box !important;
+
+    margin-bottom: 18px !important;
+    padding: 0 !important;
+
+    background: #ffffff !important;
+    border: 1px solid #d4d9df !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.detail-section .section-heading {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    margin: 0 !important;
+    padding: 16px 20px !important;
+
+    border-bottom: 1px solid #d4d9df !important;
+}
+
+.detail-section .section-heading h2 {
+    margin: 0 !important;
+
+    color: #27323d !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.detail-section .section-heading p {
+    margin-top: 4px !important;
+
+    color: #7a8591 !important;
+    font-size: 11px !important;
+}
+
+/* ---------- FIR DATA ---------- */
+
+.detail-section .info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0 !important;
+
+    padding: 0 !important;
+}
+
+.detail-section .info-grid > div {
+    min-height: 72px !important;
+    padding: 16px 20px !important;
+
+    border-right: 1px solid #e0e5e9 !important;
+}
+
+.detail-section .info-grid > div:last-child {
+    border-right: none !important;
+}
+
+.detail-section .info-grid .detail-label {
+    display: block !important;
+    margin-bottom: 7px !important;
+
+    color: #7a8590 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.detail-section .info-grid strong {
+    display: block !important;
+
+    color: #303b46 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+}
+
+@media (max-width: 700px) {
+    .detail-section .info-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .detail-section .info-grid > div {
+        border-right: none !important;
+        border-bottom: 1px solid #e0e5e9 !important;
+    }
+
+    .detail-section .info-grid > div:last-child {
+        border-bottom: none !important;
+    }
+}
+/* =========================================================
+   CASE DETAILS - TIMELINE
+   ========================================================= */
+
+.detail-section:has(#timeline) {
+    padding: 0 !important;
+}
+
+.detail-section:has(#timeline) .section-heading {
+    margin-bottom: 0 !important;
+}
+
+#timeline {
+    position: relative !important;
+    padding: 20px 24px 22px 38px !important;
+}
+
+/* Vertical timeline line */
+#timeline::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 24px !important;
+    bottom: 24px !important;
+    left: 20px !important;
+    width: 1px !important;
+    background: #cfd6dd !important;
+}
+
+/* Individual timeline records */
+#timeline .timeline-item {
+    position: relative !important;
+    margin-bottom: 18px !important;
+    padding: 0 0 0 18px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#timeline .timeline-item:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Timeline marker */
+#timeline .timeline-marker {
+    position: absolute !important;
+    left: -24px !important;
+    top: 2px !important;
+
+    width: 9px !important;
+    height: 9px !important;
+
+    background: #3b638c !important;
+    border: 2px solid #ffffff !important;
+    border-radius: 50% !important;
+
+    box-shadow: 0 0 0 1px #aeb8c2 !important;
+}
+
+/* Event content */
+#timeline .timeline-content {
+    padding: 0 !important;
+}
+
+#timeline .timeline-date {
+    margin-bottom: 4px !important;
+
+    color: #7a8591 !important;
+    font-family: "Courier New", monospace !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}
+
+#timeline .timeline-title {
+    color: #29343f !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+#timeline .timeline-description {
+    margin-top: 4px !important;
+
+    color: #687480 !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+}
+/* =========================================================
+   CASE DETAILS - ACCUSED & VICTIMS
+   ========================================================= */
+
+.two-column-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+
+    width: 100% !important;
+    margin-bottom: 18px !important;
+}
+
+.two-column-grid .detail-section {
+    margin-bottom: 0 !important;
+}
+
+.two-column-grid .person-list {
+    padding: 0 !important;
+}
+
+/* Person records */
+.person-list .person-item {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+
+    margin: 0 !important;
+    padding: 15px 20px !important;
+
+    background: #ffffff !important;
+    border: none !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.person-list .person-item:last-child {
+    border-bottom: none !important;
+}
+
+.person-list .person-item:hover {
+    background: #f6f8fa !important;
+}
+
+/* Person marker */
+.person-list .person-item::before {
+    content: "" !important;
+
+    width: 7px !important;
+    height: 7px !important;
+
+    margin-top: 5px !important;
+
+    flex: 0 0 7px !important;
+
+    background: #3b638c !important;
+    border-radius: 50% !important;
+}
+
+/* Person information */
+.person-list .person-name {
+    color: #29343f !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+.person-list .person-details {
+    margin-top: 4px !important;
+    color: #737e89 !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+}
+
+/* Empty state */
+.person-list .empty-record {
+    margin: 0 !important;
+    padding: 18px 20px !important;
+
+    color: #8a949e !important;
+    background: #fafbfc !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    font-size: 11px !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    .two-column-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+/* =========================================================
+   CASE DETAILS - EVIDENCE
+   ========================================================= */
+
+.detail-section:has(#evidenceList) {
+    padding: 0 !important;
+}
+
+.detail-section:has(#evidenceList) .section-heading {
+    margin-bottom: 0 !important;
+}
+
+#evidenceList {
+    width: 100% !important;
+}
+
+/* Each evidence record */
+#evidenceList .record-item {
+    display: grid !important;
+    grid-template-columns: 1.1fr 1.5fr 1.1fr !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 24px !important;
+    row-gap: 8px !important;
+
+    margin: 0 !important;
+    padding: 16px 20px !important;
+
+    background: #fff !important;
+    border: none !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    min-height: 100px !important;
+    box-sizing: border-box !important;
+}
+
+#evidenceList .record-item:last-child {
+    border-bottom: none !important;
+}
+
+#evidenceList .record-item:hover {
+    background: #f7f8fa !important;
+}
+
+/* Evidence type */
+#evidenceList .record-item > strong {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    color: #29343f !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+}
+
+/* Description */
+#evidenceList .record-item > span:nth-of-type(1) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+
+    color: #687480 !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+}
+
+/* Collection date */
+#evidenceList .record-item > span:nth-of-type(2) {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+
+    color: #737e89 !important;
+    font-size: 11px !important;
+}
+
+/* Location */
+#evidenceList .record-item > span:nth-of-type(3) {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+
+    color: #737e89 !important;
+    font-size: 11px !important;
+}
+
+/* Status */
+#evidenceList .record-item > span:nth-of-type(4) {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+
+    color: #52606d !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-align: right !important;
+}
+
+/* Collected by */
+#evidenceList .record-item > span:nth-of-type(5) {
+    grid-column: 3 !important;
+    grid-row: 2 !important;
+
+    color: #737e89 !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+    text-align: right !important;
+}
+
+/* Empty state */
+#evidenceList .empty-record {
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: #fafbfc !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    color: #89939e !important;
+    font-size: 11px !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    #evidenceList .record-item {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    #evidenceList .record-item > strong {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(1) {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(2) {
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(3) {
+        grid-column: 2 !important;
+        grid-row: 3 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(4) {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        text-align: right !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(5) {
+        grid-column: 1 / -1 !important;
+        grid-row: 4 !important;
+        text-align: left !important;
+    }
+}
+/* =========================================================
+   CASE DETAILS - INVESTIGATION
+   ========================================================= */
+
+.detail-section:has(#investigationOfficer) {
+    padding: 0 !important;
+}
+
+.detail-section:has(#investigationOfficer) .section-heading {
+    margin-bottom: 0 !important;
+}
+
+.detail-section:has(#investigationOfficer) .info-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
+    padding: 0 !important;
+}
+
+.detail-section:has(#investigationOfficer) .info-grid > div {
+    min-height: 76px !important;
+    padding: 16px 20px !important;
+
+    border-right: 1px solid #e0e5e9 !important;
+    border-bottom: none !important;
+}
+
+.detail-section:has(#investigationOfficer) .info-grid > div:last-child {
+    border-right: none !important;
+}
+
+.detail-section:has(#investigationOfficer) .detail-label {
+    display: block !important;
+    margin-bottom: 7px !important;
+
+    color: #7a8590 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .05em !important;
+}
+
+.detail-section:has(#investigationOfficer) .info-grid strong {
+    display: block !important;
+
+    color: #303b46 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .detail-section:has(#investigationOfficer) .info-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .detail-section:has(#investigationOfficer) .info-grid > div {
+        border-right: none !important;
+        border-bottom: 1px solid #e0e5e9 !important;
+    }
+
+    .detail-section:has(#investigationOfficer) .info-grid > div:last-child {
+        border-bottom: none !important;
+    }
+}
+/* ---------------------------------------------------------
+   8. ARRESTS + BAIL
+   --------------------------------------------------------- */
+
+.detail-section:has(#arrestsList),
+.detail-section:has(#bailList) {
+    padding: 0 !important;
+}
+
+#arrestsList,
+#bailList {
+    width: 100% !important;
+}
+
+#arrestsList .arrest-record,
+#bailList .bail-record {
+    margin: 0 !important;
+    padding: 15px 20px !important;
+
+    background: #ffffff !important;
+    border: none !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+#arrestsList .arrest-record:last-child,
+#bailList .bail-record:last-child {
+    border-bottom: none !important;
+}
+
+#arrestsList .arrest-record:hover,
+#bailList .bail-record:hover {
+    background: #f7f8fa !important;
+}
+
+
+/* ---------------------------------------------------------
+   9. BNS CHARGES
+   --------------------------------------------------------- */
+
+.detail-section:has(#chargesList) {
+    padding: 0 !important;
+}
+
+.detail-section:has(#chargesList) .section-heading {
+    margin-bottom: 0 !important;
+}
+
+#chargesList {
+    width: 100% !important;
+}
+
+#chargesList .charge-record {
+    display: grid !important;
+    grid-template-columns: 150px minmax(180px, 1fr) 130px !important;
+    align-items: center !important;
+    gap: 18px !important;
+
+    min-height: 62px !important;
+    margin: 0 !important;
+    padding: 13px 20px !important;
+
+    background: #ffffff !important;
+    border: none !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+#chargesList .charge-record:last-child {
+    border-bottom: none !important;
+}
+
+#chargesList .charge-record:hover {
+    background: #f7f8fa !important;
+}
+
+
+/* ---------------------------------------------------------
+   10. CHARGESHEET
+   --------------------------------------------------------- */
+
+.detail-section:has(#chargesheet) {
+    padding: 0 !important;
+}
+
+#chargesheet {
+    padding: 18px 20px !important;
+    color: #4f5b67 !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+}
+
+
+/* ---------------------------------------------------------
+   11. COURT PROCEEDINGS
+   --------------------------------------------------------- */
+
+.detail-section:has(#proceedings) {
+    padding: 0 !important;
+}
+
+.detail-section:has(#proceedings) .section-heading {
+    margin-bottom: 0 !important;
+}
+
+#proceedings {
+    width: 100% !important;
+}
+
+#proceedings .proceeding-record {
+    margin: 0 !important;
+    padding: 15px 20px !important;
+
+    background: #ffffff !important;
+    border: none !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+#proceedings .proceeding-record:last-child {
+    border-bottom: none !important;
+}
+
+#proceedings .proceeding-record:hover {
+    background: #f7f8fa !important;
+}
+
+
+/* ---------------------------------------------------------
+   12. JUDGMENT
+   --------------------------------------------------------- */
+
+.detail-section:has(#judgment) {
+    padding: 0 !important;
+}
+
+#judgment {
+    padding: 18px 20px !important;
+
+    color: #4f5b67 !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+}
+
+#judgmentStatus {
+    margin-right: 8px !important;
+}
+
+
+/* ---------------------------------------------------------
+   13. SENTENCE
+   --------------------------------------------------------- */
+
+.detail-section:has(#sentence) {
+    padding: 0 !important;
+}
+
+#sentence {
+    padding: 18px 20px !important;
+
+    color: #4f5b67 !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+}
+
+#sentence .sentence-record {
+    margin: 0 !important;
+    padding: 14px 16px !important;
+
+    background: #f7f8fa !important;
+    border: 1px solid #dfe4e8 !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+
+/* ---------------------------------------------------------
+   14. IMPRISONMENT
+   --------------------------------------------------------- */
+
+.detail-section:has(#imprisonment) {
+    padding: 0 !important;
+}
+
+#imprisonment {
+    padding: 18px 20px !important;
+
+    color: #4f5b67 !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+}
+
+#imprisonment .imprisonment-record {
+    margin: 0 !important;
+    padding: 14px 16px !important;
+
+    background: #f7f8fa !important;
+    border: 1px solid #dfe4e8 !important;
+    border-radius: 3px !important;
+    box-shadow: none !important;
+}
+
+
+/* ---------------------------------------------------------
+   15. GENERIC RECORD STYLING
+   --------------------------------------------------------- */
+
+.detail-section .record-item,
+.detail-section .arrest-record,
+.detail-section .bail-record,
+.detail-section .charge-record,
+.detail-section .chargesheet-record,
+.detail-section .proceeding-record,
+.detail-section .judgment-record,
+.detail-section .sentence-record,
+.detail-section .imprisonment-record {
+    box-shadow: none !important;
+}
+
+
+/* ---------------------------------------------------------
+   16. EMPTY STATES
+   --------------------------------------------------------- */
+
+.detail-section .empty-record {
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: #fafbfc !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    color: #89939e !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+}
+
+
+/* ---------------------------------------------------------
+   17. STATUS BADGES
+   --------------------------------------------------------- */
+
+.detail-section .status,
+.detail-section .outcome-badge,
+.detail-section .charge-status,
+.detail-section .proceeding-status,
+.detail-section .judgment-status,
+.detail-section .bail-status {
+    border-radius: 3px !important;
+    box-shadow: none !important;
+
+    font-size: 10px !important;
+    font-weight: 700 !important;
+}
+
+
+/* ---------------------------------------------------------
+   18. MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 850px) {
+
+    .detail-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .detail-grid .detail-card:nth-child(2) {
+        border-right: none !important;
+    }
+
+    .detail-grid .detail-card {
+        border-bottom: 1px solid #dfe4e8 !important;
+    }
+
+    .detail-grid .detail-card:nth-child(3),
+    .detail-grid .detail-card:nth-child(4) {
+        border-bottom: none !important;
+    }
+
+    .two-column-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .two-column-grid .detail-section {
+        margin-bottom: 14px !important;
+    }
+
+    #evidenceList .record-item {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    #evidenceList .record-item > strong {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(1) {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(2) {
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(3) {
+        grid-column: 2 !important;
+        grid-row: 3 !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(4) {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        text-align: right !important;
+    }
+
+    #evidenceList .record-item > span:nth-of-type(5) {
+        grid-column: 1 / -1 !important;
+        grid-row: 4 !important;
+        text-align: left !important;
+    }
+
+    #chargesList .charge-record {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .case-detail-header {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    .case-header-status {
+        padding-top: 0 !important;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .detail-grid .detail-card {
+        border-right: none !important;
+        border-bottom: 1px solid #dfe4e8 !important;
+    }
+
+    .detail-grid .detail-card:last-child {
+        border-bottom: none !important;
+    }
+
+    .detail-section .info-grid,
+    .detail-section:has(#investigationOfficer) .info-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .detail-section .info-grid > div {
+        border-right: none !important;
+        border-bottom: 1px solid #e0e5e9 !important;
+    }
+
+    .detail-section .info-grid > div:last-child {
+        border-bottom: none !important;
+    }
+
+    #chargesList .charge-record {
+        grid-template-columns: 1fr !important;
+        gap: 7px !important;
+    }
+}
+/* =========================================================
+   FINAL FIX - BNS CHARGES
+   ========================================================= */
+
+#chargesList {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+}
+
+#chargesList .charge-record {
+    display: grid !important;
+
+    grid-template-columns: 1.1fr 1.4fr 1fr !important;
+    grid-template-rows: auto auto !important;
+
+    grid-template-areas:
+        "main meta status"
+        "main meta description" !important;
+
+    column-gap: 28px !important;
+    row-gap: 14px !important;
+
+    width: 100% !important;
+    min-height: 0 !important;
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+    padding: 18px 20px !important;
+
+    background: #ffffff !important;
+    border: none !important;
+    border-bottom: 1px solid #e1e5e9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+#chargesList .charge-record:last-child {
+    border-bottom: none !important;
+}
+
+#chargesList .charge-record:hover {
+    background: #f7f8fa !important;
+}
+
+
+/* ---------------------------------------------------------
+   ACCUSED + BNS SECTION
+   --------------------------------------------------------- */
+
+#chargesList .charge-main {
+    grid-area: main !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+
+    min-width: 0 !important;
+}
+
+#chargesList .charge-main > div {
+    min-width: 0 !important;
+}
+
+#chargesList .detail-label {
+    display: block !important;
+
+    margin-bottom: 6px !important;
+
+    color: #7a8590 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .05em !important;
+}
+
+#chargesList .charge-main strong {
+    display: block !important;
+
+    color: #29343f !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+
+    overflow-wrap: anywhere !important;
+}
+
+
+/* ---------------------------------------------------------
+   CHARGE DATE + CHAPTER
+   --------------------------------------------------------- */
+
+#chargesList .charge-meta {
+    grid-area: meta !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+
+    min-width: 0 !important;
+}
+
+#chargesList .charge-meta > div {
+    min-width: 0 !important;
+}
+
+#chargesList .charge-meta > div span:not(.detail-label) {
+    display: block !important;
+
+    color: #52606d !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    overflow-wrap: anywhere !important;
+}
+
+
+/* ---------------------------------------------------------
+   STATUS
+   --------------------------------------------------------- */
+
+#chargesList .charge-meta > div:last-child {
+    display: none !important;
+}
+
+#chargesList .charge-status {
+    grid-area: status !important;
+    align-self: start !important;
+    justify-self: end !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 70px !important;
+    min-height: 25px !important;
+
+    margin: 0 !important;
+    padding: 4px 10px !important;
+
+    background: #eef2f7 !important;
+    color: #46576a !important;
+
+    border: 1px solid #d8dfe6 !important;
+    border-radius: 3px !important;
+
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .04em !important;
+
+    box-shadow: none !important;
+}
+
+
+/* ---------------------------------------------------------
+   DESCRIPTION
+   --------------------------------------------------------- */
+
+#chargesList .charge-description {
+    grid-area: description !important;
+
+    min-width: 0 !important;
+
+    padding-top: 2px !important;
+}
+
+#chargesList .charge-description .detail-label {
+    margin-bottom: 5px !important;
+}
+
+#chargesList .charge-description p {
+    margin: 0 !important;
+
+    color: #687480 !important;
+    font-size: 11px !important;
+    line-height: 1.55 !important;
+
+    overflow-wrap: anywhere !important;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 800px) {
+
+    #chargesList .charge-record {
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: auto auto auto !important;
+
+        grid-template-areas:
+            "main status"
+            "meta meta"
+            "description description" !important;
+
+        column-gap: 18px !important;
+    }
+
+    #chargesList .charge-main {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    #chargesList .charge-meta {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 18px !important;
+    }
+
+    #chargesList .charge-status {
+        justify-self: end !important;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    #chargesList .charge-record {
+        grid-template-columns: 1fr !important;
+
+        grid-template-areas:
+            "main"
+            "meta"
+            "status"
+            "description" !important;
+    }
+
+    #chargesList .charge-main {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    #chargesList .charge-meta {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    #chargesList .charge-status {
+        justify-self: start !important;
+    }
 }

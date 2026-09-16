@@ -21,7 +21,52 @@ let cases = [];
 let firRecords = [];
 let officerRecords = [];
 
+/* =========================================================
+   LOAD OFFICER NAMES FOR CASES
+   ========================================================= */
 
+async function loadOfficerNamesForCases() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/police-officers/?skip=0&limit=100`
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Officer request failed: ${response.status}`
+            );
+        }
+
+        const records =
+            await response.json();
+
+        const officers =
+            Array.isArray(records)
+                ? records
+                : [];
+
+        window.caseOfficerRecords =
+            officers;
+
+        console.log(
+            "Officers loaded for cases:",
+            officers
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error loading officer names:",
+            error
+        );
+
+        window.caseOfficerRecords = [];
+    }
+}
 /* =========================================================
    LOAD CASES
    ========================================================= */
@@ -91,6 +136,7 @@ async function loadCases() {
         );
 
 
+        await loadOfficerNamesForCases();
         populateCrimeFilter();
         renderCases(cases);
 
@@ -174,11 +220,18 @@ function renderCases(caseData) {
             </td>
 
             <td>
-                ${escapeHTML(
-                    caseItem.investigating_officer_name ||
-                    `Officer #${caseItem.investigating_officer_id || "—"}`
-                )}
-            </td>
+    ${escapeHTML(
+        (
+            window.caseOfficerRecords || []
+        ).find(
+            officer =>
+                officer.officer_id ===
+                caseItem.investigating_officer_id
+        )?.name ||
+        caseItem.investigating_officer_name ||
+        `Officer #${caseItem.investigating_officer_id || ""}`
+    )}
+</td>
 
             <td>
                 <span class="status ${statusClass}">
@@ -367,11 +420,7 @@ function filterCases() {
 
 
 /* =========================================================
-   LOAD FIR OPTIONS
-   ========================================================= */
-
-/* =========================================================
-   LOAD POLICE STATIONS
+   LOAD station records
    ========================================================= */
 
 async function loadStationRecords() {
@@ -397,13 +446,13 @@ async function loadStationRecords() {
                 ? stationRecords
                 : [];
 
+        window.stationRecords =
+            stations;
 
-        caseStation.innerHTML = `
-            <option value="">
-                Select police station
-            </option>
-        `;
+        const datalist =
+            document.getElementById("stationOptions");
 
+        datalist.innerHTML = "";
 
         stations.forEach(station => {
 
@@ -411,13 +460,10 @@ async function loadStationRecords() {
                 document.createElement("option");
 
             option.value =
-                station.station_id;
-
-            option.textContent =
                 station.station_name ||
                 `Station #${station.station_id}`;
 
-            caseStation.appendChild(option);
+            datalist.appendChild(option);
 
         });
 
@@ -428,15 +474,10 @@ async function loadStationRecords() {
             error
         );
 
-        caseStation.innerHTML = `
-            <option value="">
-                Unable to load police stations
-            </option>
-        `;
+        window.stationRecords = [];
     }
 }
-
-
+   
 /* =========================================================
    LOAD COMPLAINANTS
    ========================================================= */
@@ -618,6 +659,10 @@ async function openAddCaseModal() {
     addCaseMessage.className = "form-message";
 
     addCaseForm.reset();
+    document.getElementById("newStationFields").style.display = "none";
+document.getElementById("newOfficerFields").style.display = "none";
+document.getElementById("newComplainantFields").style.display = "none";
+document.getElementById("newCrimeFields").style.display = "none";
 
 
     const today =
@@ -639,6 +684,216 @@ async function openAddCaseModal() {
     ]);
 }
 /* =========================================================
+   SHOW / HIDE NEW RECORD FIELDS
+   ========================================================= */
+
+function setupNewRecordDetection() {
+
+    /* -----------------------------------------------------
+       POLICE STATION
+       ----------------------------------------------------- */
+
+    const stationInput =
+        document.getElementById("caseStation");
+
+    const newStationFields =
+        document.getElementById("newStationFields");
+
+
+    stationInput.addEventListener("input", () => {
+
+        const enteredName =
+            stationInput.value
+                .trim()
+                .replace(/\s+/g, " ");
+
+
+        const existingStation =
+            (window.stationRecords || []).find(
+                station => {
+
+                    const existingName =
+                        (station.station_name || "")
+                            .trim()
+                            .replace(/\s+/g, " ");
+
+                    return (
+                        existingName.toLowerCase() ===
+                        enteredName.toLowerCase()
+                    );
+                }
+            );
+
+
+        if (enteredName && !existingStation) {
+
+            newStationFields.style.display =
+                "block";
+
+        } else {
+
+            newStationFields.style.display =
+                "none";
+        }
+
+    });
+
+
+    /* -----------------------------------------------------
+       COMPLAINANT
+       ----------------------------------------------------- */
+
+    const complainantInput =
+        document.getElementById("complainant");
+
+    const newComplainantFields =
+        document.getElementById("newComplainantFields");
+
+
+    complainantInput.addEventListener("input", () => {
+
+        const enteredName =
+            complainantInput.value
+                .trim()
+                .replace(/\s+/g, " ");
+
+
+        const existingPerson =
+            (window.personRecords || []).find(
+                person => {
+
+                    const existingName =
+                        (person.full_name || "")
+                            .trim()
+                            .replace(/\s+/g, " ");
+
+                    return (
+                        existingName.toLowerCase() ===
+                        enteredName.toLowerCase()
+                    );
+                }
+            );
+
+
+        if (enteredName && !existingPerson) {
+
+            newComplainantFields.style.display =
+                "block";
+
+        } else {
+
+            newComplainantFields.style.display =
+                "none";
+        }
+
+    });
+
+
+    /* -----------------------------------------------------
+       INVESTIGATING OFFICER
+       ----------------------------------------------------- */
+
+    const officerInput =
+        document.getElementById("caseOfficer");
+
+    const newOfficerFields =
+        document.getElementById("newOfficerFields");
+
+
+    officerInput.addEventListener("input", () => {
+
+        const enteredName =
+            officerInput.value
+                .trim()
+                .replace(/\s+/g, " ");
+
+
+        const existingOfficer =
+            (window.officerRecords || []).find(
+                officer => {
+
+                    const existingName =
+                        (
+                            officer.name ||
+                            officer.full_name ||
+                            ""
+                        )
+                            .trim()
+                            .replace(/\s+/g, " ");
+
+                    return (
+                        existingName.toLowerCase() ===
+                        enteredName.toLowerCase()
+                    );
+                }
+            );
+
+
+        if (enteredName && !existingOfficer) {
+
+            newOfficerFields.style.display =
+                "block";
+
+        } else {
+
+            newOfficerFields.style.display =
+                "none";
+        }
+
+    });
+
+
+    /* -----------------------------------------------------
+       CRIME TYPE
+       ----------------------------------------------------- */
+
+    const crimeInput =
+        document.getElementById("caseCrime");
+
+    const newCrimeFields =
+        document.getElementById("newCrimeFields");
+
+
+    crimeInput.addEventListener("input", () => {
+
+        const enteredName =
+            crimeInput.value
+                .trim()
+                .replace(/\s+/g, " ");
+
+
+        const existingCrime =
+            (window.crimeRecords || []).find(
+                crime => {
+
+                    const existingName =
+                        (crime.crime_name || "")
+                            .trim()
+                            .replace(/\s+/g, " ");
+
+                    return (
+                        existingName.toLowerCase() ===
+                        enteredName.toLowerCase()
+                    );
+                }
+            );
+
+
+        if (enteredName && !existingCrime) {
+
+            newCrimeFields.style.display =
+                "block";
+
+        } else {
+
+            newCrimeFields.style.display =
+                "none";
+        }
+
+    });
+
+}
+/* =========================================================
    CLOSE MODAL
    ========================================================= */
 
@@ -648,7 +903,929 @@ function closeModal() {
 
 }
 
+/* =========================================================
+   GET OR CREATE PERSON
+   ========================================================= */
 
+async function getOrCreatePerson() {
+
+    const name =
+        document.getElementById("complainant")
+            .value
+            .trim();
+
+    if (!name) {
+        throw new Error("Please enter a complainant name.");
+    }
+
+
+    /* Check whether person already exists */
+
+    const existingPerson =
+        (window.personRecords || []).find(
+            person => {
+
+                const existingName =
+                    (person.full_name || "")
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                const enteredName =
+                    name
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                return (
+                    existingName.toLowerCase() ===
+                    enteredName.toLowerCase()
+                );
+            }
+        );
+
+
+    /* Existing person */
+
+    if (existingPerson) {
+
+        console.log(
+            "Using existing complainant:",
+            existingPerson
+        );
+
+        return existingPerson.person_id;
+    }
+
+
+    /* New person */
+
+    const personPayload = {
+
+        full_name: name,
+
+        date_of_birth:
+            document.getElementById("complainantDob")
+                ?.value || null,
+
+        gender:
+            document.getElementById("complainantGender")
+                ?.value
+                .trim() || null,
+
+        phone:
+            document.getElementById("complainantPhone")
+                ?.value
+                .trim() || null,
+
+        email:
+            document.getElementById("complainantEmail")
+                ?.value
+                .trim() || null,
+
+        address:
+            document.getElementById("complainantAddress")
+                ?.value
+                .trim() || null,
+
+        city:
+            document.getElementById("complainantCity")
+                ?.value
+                .trim() || null,
+
+        state:
+            document.getElementById("complainantState")
+                ?.value
+                .trim() || null,
+
+        pincode:
+            document.getElementById("complainantPincode")
+                ?.value
+                .trim() || null
+
+    };
+
+
+    console.log(
+        "Creating new complainant:",
+        personPayload
+    );
+
+
+    const response =
+        await fetch(
+            `${API_BASE_URL}/persons/`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(personPayload)
+            }
+        );
+
+
+    if (!response.ok) {
+
+        let errorMessage =
+            "Unable to create the new complainant.";
+
+        try {
+
+            const errorData =
+                await response.json();
+
+            if (errorData.detail) {
+                errorMessage =
+                    errorData.detail;
+            }
+
+        } catch (_) {}
+
+        throw new Error(errorMessage);
+    }
+
+
+    const createdPerson =
+        await response.json();
+
+
+    console.log(
+        "New complainant created:",
+        createdPerson
+    );
+
+
+    /* Add new person to local records */
+
+    window.personRecords =
+        window.personRecords || [];
+
+    window.personRecords.push(
+        createdPerson
+    );
+
+
+    return createdPerson.person_id;
+}
+/* =========================================================
+   GET OR CREATE CRIME
+   ========================================================= */
+
+async function getOrCreateCrime() {
+
+    const crimeName =
+        document.getElementById("caseCrime")
+            .value
+            .trim();
+
+    if (!crimeName) {
+        throw new Error("Please enter a crime type.");
+    }
+
+
+    /* Check whether crime already exists */
+
+    const existingCrime =
+        (window.crimeRecords || []).find(
+            crime => {
+
+                const existingName =
+                    (crime.crime_name || "")
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                const enteredName =
+                    crimeName
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                return (
+                    existingName.toLowerCase() ===
+                    enteredName.toLowerCase()
+                );
+            }
+        );
+
+
+    /* Existing crime */
+
+    if (existingCrime) {
+
+        console.log(
+            "Using existing crime:",
+            existingCrime
+        );
+
+        return existingCrime.crime_id;
+    }
+
+
+    /* New crime */
+
+    const crimePayload = {
+
+        crime_name: crimeName,
+
+        description:
+            document.getElementById("crimeDescription")
+                ?.value
+                .trim() || null,
+
+        severity:
+            document.getElementById("crimeSeverity")
+                ?.value
+                .trim() || null
+
+    };
+
+
+    console.log(
+        "Creating new crime:",
+        crimePayload
+    );
+
+
+    const response =
+        await fetch(
+            `${API_BASE_URL}/crimes/`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(crimePayload)
+            }
+        );
+
+
+    if (!response.ok) {
+
+        let errorMessage =
+            "Unable to create the new crime type.";
+
+        try {
+
+            const errorData =
+                await response.json();
+
+            if (errorData.detail) {
+                errorMessage =
+                    errorData.detail;
+            }
+
+        } catch (_) {}
+
+        throw new Error(errorMessage);
+    }
+
+
+    const createdCrime =
+        await response.json();
+
+
+    console.log(
+        "New crime created:",
+        createdCrime
+    );
+
+
+    /* Add new crime to local records */
+
+    window.crimeRecords =
+        window.crimeRecords || [];
+
+    window.crimeRecords.push(
+        createdCrime
+    );
+
+
+    return createdCrime.crime_id;
+}
+/* =========================================================
+   GET OR CREATE POLICE STATION
+   ========================================================= */
+
+async function getOrCreateStation() {
+
+    const stationName =
+        document.getElementById("caseStation")
+            .value
+            .trim();
+
+    if (!stationName) {
+        throw new Error("Please enter a police station.");
+    }
+
+
+    /* Check whether station already exists */
+
+    const existingStation =
+        (window.stationRecords || []).find(
+            station => {
+
+                const existingName =
+                    (station.station_name || "")
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                const enteredName =
+                    stationName
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                return (
+                    existingName.toLowerCase() ===
+                    enteredName.toLowerCase()
+                );
+            }
+        );
+
+
+    /* Existing station */
+
+    if (existingStation) {
+
+        console.log(
+            "Using existing police station:",
+            existingStation
+        );
+
+        return existingStation.station_id;
+    }
+
+
+    /* New station */
+
+    const stationPayload = {
+
+        station_name: stationName,
+
+        address:
+            document.getElementById("stationAddress")
+                ?.value
+                .trim() || "",
+
+        city:
+            document.getElementById("stationCity")
+                ?.value
+                .trim() || "",
+
+        state:
+            document.getElementById("stationState")
+                ?.value
+                .trim() || "",
+
+        pincode:
+            document.getElementById("stationPincode")
+                ?.value
+                .trim() || "",
+
+        phone:
+            document.getElementById("stationPhone")
+                ?.value
+                .trim() || ""
+
+    };
+
+
+    /* Basic validation for a new station */
+
+    if (
+        !stationPayload.address ||
+        !stationPayload.city ||
+        !stationPayload.state ||
+        !stationPayload.pincode ||
+        !stationPayload.phone
+    ) {
+
+        throw new Error(
+            "Please complete all new police station details."
+        );
+    }
+
+
+    console.log(
+        "Creating new police station:",
+        stationPayload
+    );
+
+
+    const response =
+        await fetch(
+            `${API_BASE_URL}/police-stations/`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(stationPayload)
+            }
+        );
+
+
+    if (!response.ok) {
+
+        let errorMessage =
+            "Unable to create the new police station.";
+
+        try {
+
+            const errorData =
+                await response.json();
+
+            if (errorData.detail) {
+                errorMessage =
+                    errorData.detail;
+            }
+
+        } catch (_) {}
+
+        throw new Error(errorMessage);
+    }
+
+
+    const createdStation =
+        await response.json();
+
+
+    console.log(
+        "New police station created:",
+        createdStation
+    );
+
+
+    /* Add new station to local records */
+
+    window.stationRecords =
+        window.stationRecords || [];
+
+    window.stationRecords.push(
+        createdStation
+    );
+
+
+    return createdStation.station_id;
+}
+/* =========================================================
+   GET OR CREATE POLICE OFFICER
+   ========================================================= */
+
+async function getOrCreateOfficer(stationId) {
+
+    const officerName =
+        document.getElementById("caseOfficer")
+            .value
+            .trim();
+
+    if (!officerName) {
+        throw new Error(
+            "Please enter an investigating officer."
+        );
+    }
+
+
+    /* Check whether officer already exists */
+
+    const existingOfficer =
+        (window.officerRecords || []).find(
+            officer => {
+
+                const existingName =
+                    (
+                        officer.name ||
+                        officer.full_name ||
+                        ""
+                    )
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                const enteredName =
+                    officerName
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                return (
+                    existingName.toLowerCase() ===
+                    enteredName.toLowerCase()
+                );
+            }
+        );
+
+
+    /* Existing officer */
+
+    if (existingOfficer) {
+
+        console.log(
+            "Using existing officer:",
+            existingOfficer
+        );
+
+        return existingOfficer.officer_id;
+    }
+
+
+    /* New officer */
+
+    if (!stationId) {
+        throw new Error(
+            "A police station is required before creating a new officer."
+        );
+    }
+
+
+    const officerPayload = {
+
+        station_id: stationId,
+
+        name: officerName,
+
+        rank:
+            document.getElementById("officerRank")
+                ?.value
+                .trim() || "",
+
+        badge_number:
+            document.getElementById("officerBadge")
+                ?.value
+                .trim() || "",
+
+        phone:
+            document.getElementById("officerPhone")
+                ?.value
+                .trim() || null,
+
+        email:
+            document.getElementById("officerEmail")
+                ?.value
+                .trim() || null,
+
+        joining_date:
+            document.getElementById("officerJoiningDate")
+                ?.value || null,
+
+        status: "Active"
+    };
+
+
+    /* Required fields for a new officer */
+
+    if (
+        !officerPayload.rank ||
+        !officerPayload.badge_number
+    ) {
+
+        throw new Error(
+            "Please enter the rank and badge number for the new officer."
+        );
+    }
+
+
+    console.log(
+        "Creating new police officer:",
+        officerPayload
+    );
+
+
+    const response =
+        await fetch(
+            `${API_BASE_URL}/police-officers/`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(officerPayload)
+            }
+        );
+
+
+    if (!response.ok) {
+
+        let errorMessage =
+            "Unable to create the new investigating officer.";
+
+        try {
+
+            const errorData =
+                await response.json();
+
+            if (errorData.detail) {
+                errorMessage =
+                    errorData.detail;
+            }
+
+        } catch (_) {}
+
+        throw new Error(errorMessage);
+    }
+
+
+    const createdOfficer =
+        await response.json();
+
+
+    console.log(
+        "New police officer created:",
+        createdOfficer
+    );
+
+
+    /* Add new officer to local records */
+
+    window.officerRecords =
+        window.officerRecords || [];
+
+    window.officerRecords.push(
+        createdOfficer
+    );
+
+
+    return createdOfficer.officer_id;
+}
+/* =========================================================
+   GET OR CREATE CRIMINAL
+   ========================================================= */
+
+async function getOrCreateCriminal() {
+
+    const criminalName =
+        document.getElementById("caseCriminal")
+            ?.value
+            .trim() || "";
+
+
+    /* Accused / suspect is optional */
+
+    if (!criminalName) {
+        return null;
+    }
+
+
+    const normalizedName =
+        criminalName
+            .trim()
+            .replace(/\s+/g, " ");
+
+
+    /* =====================================================
+       CHECK WHETHER THIS PERSON ALREADY EXISTS
+       ===================================================== */
+
+    let person =
+        (window.personRecords || []).find(
+            record => {
+
+                const existingName =
+                    (record.full_name || "")
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                return (
+                    existingName.toLowerCase() ===
+                    normalizedName.toLowerCase()
+                );
+            }
+        );
+
+
+    /* =====================================================
+       CREATE PERSON IF NECESSARY
+       ===================================================== */
+
+    if (!person) {
+
+        const personPayload = {
+
+            full_name:
+                normalizedName,
+
+            date_of_birth: null,
+            gender: null,
+            phone: null,
+            email: null,
+            address: null,
+            city: null,
+            state: null,
+            pincode: null
+
+        };
+
+
+        console.log(
+            "Creating person for criminal:",
+            personPayload
+        );
+
+
+        const personResponse =
+            await fetch(
+                `${API_BASE_URL}/persons/`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(personPayload)
+                }
+            );
+
+
+        if (!personResponse.ok) {
+
+            let errorMessage =
+                "Unable to create the person record.";
+
+            try {
+
+                const errorData =
+                    await personResponse.json();
+
+                if (errorData.detail) {
+                    errorMessage =
+                        errorData.detail;
+                }
+
+            } catch (_) {}
+
+            throw new Error(errorMessage);
+        }
+
+
+        person =
+            await personResponse.json();
+
+
+        window.personRecords =
+            window.personRecords || [];
+
+        window.personRecords.push(person);
+
+
+        console.log(
+            "New person created:",
+            person
+        );
+    }
+
+
+    /* =====================================================
+       CHECK WHETHER PERSON IS ALREADY A CRIMINAL
+       ===================================================== */
+
+    let criminal = null;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/criminals/?skip=0&limit=100`
+            );
+
+
+        if (response.ok) {
+
+            const criminalRecords =
+                await response.json();
+
+            const criminals =
+                Array.isArray(criminalRecords)
+                    ? criminalRecords
+                    : [];
+
+
+            criminal =
+                criminals.find(
+                    record =>
+                        record.person_id ===
+                        person.person_id
+                );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Error checking criminal records:",
+            error
+        );
+    }
+
+
+    /* =====================================================
+       RETURN EXISTING CRIMINAL
+       ===================================================== */
+
+    if (criminal) {
+
+        console.log(
+            "Using existing criminal:",
+            criminal
+        );
+
+        return criminal.criminal_id;
+    }
+
+
+    /* =====================================================
+       CREATE NEW CRIMINAL
+       ===================================================== */
+
+    const criminalPayload = {
+
+        person_id:
+            person.person_id,
+
+        criminal_status:
+            document.getElementById("criminalStatus")
+                ?.value
+                .trim() || "Suspect",
+
+        identification_details:
+            document.getElementById("criminalIdentification")
+                ?.value
+                .trim() || null,
+
+        remarks: null
+
+    };
+
+
+    console.log(
+        "Creating new criminal:",
+        criminalPayload
+    );
+
+
+    const criminalResponse =
+        await fetch(
+            `${API_BASE_URL}/criminals/`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(criminalPayload)
+            }
+        );
+
+
+    if (!criminalResponse.ok) {
+
+        let errorMessage =
+            "Unable to create the criminal record.";
+
+        try {
+
+            const errorData =
+                await criminalResponse.json();
+
+            if (errorData.detail) {
+                errorMessage =
+                    errorData.detail;
+            }
+
+        } catch (_) {}
+
+        throw new Error(errorMessage);
+    }
+
+
+    criminal =
+        await criminalResponse.json();
+
+
+    console.log(
+        "New criminal created:",
+        criminal
+    );
+
+
+    return criminal.criminal_id;
+}
 /* =========================================================
    SUBMIT NEW CASE
    ========================================================= */
@@ -657,200 +1834,81 @@ async function createCase(event) {
 
     event.preventDefault();
 
-
     const submitButton =
         document.getElementById("submitCaseBtn");
 
     const message =
         document.getElementById("addCaseMessage");
 
-
     message.textContent = "";
     message.className = "form-message";
 
 
-    // =========================================
-    // GET FORM VALUES
-    // =========================================
-const firNumber =
-    document.getElementById("firNumber")
-        .value
-        .trim();
+    /* =====================================================
+       READ FORM VALUES
+       ===================================================== */
 
-const crimeName =
-    document.getElementById("caseCrime")
-        .value
-        .trim();
+    const firNumber =
+        document.getElementById("firNumber")
+            .value
+            .trim();
 
-const stationId =
-    Number(
-        document.getElementById("caseStation").value
-    );
+    const incidentDate =
+        document.getElementById("incidentDate")
+            .value;
 
-const complainantName =
-    document.getElementById("complainant")
-        .value
-        .trim();
+    const incidentTime =
+        document.getElementById("incidentTime")
+            .value;
 
-const incidentDate =
-    document.getElementById("incidentDate").value;
+    const incidentLocation =
+        document.getElementById("incidentLocation")
+            .value
+            .trim();
 
-const incidentTime =
-    document.getElementById("incidentTime").value;
+    const description =
+        document.getElementById("firDescription")
+            .value
+            .trim();
 
-const incidentLocation =
-    document.getElementById("incidentLocation")
-        .value
-        .trim();
+    const caseTitle =
+        document.getElementById("caseTitle")
+            .value
+            .trim();
 
-const description =
-    document.getElementById("firDescription")
-        .value
-        .trim();
+    const caseStartDate =
+        document.getElementById("caseStartDate")
+            .value;
 
+    const caseStatus =
+        document.getElementById("caseStatus")
+            .value;
 
-const caseTitle =
-    document.getElementById("caseTitle")
-        .value
-        .trim();
+    const outcome =
+        document.getElementById("caseOutcome")
+            .value || null;
 
-const officerName =
-    document.getElementById("caseOfficer")
-        .value
-        .trim();
+    const closingDate =
+        document.getElementById("caseClosingDate")
+            .value || null;
 
-const caseStartDate =
-    document.getElementById("caseStartDate").value;
-
-const caseStatus =
-    document.getElementById("caseStatus").value;
-
-const outcome =
-    document.getElementById("caseOutcome").value ||
-    null;
-
-const closingDate =
-    document.getElementById("caseClosingDate").value ||
-    null;
-
-const remarks =
-    document.getElementById("caseRemarks")
-        .value
-        .trim() || null;
+    const remarks =
+        document.getElementById("caseRemarks")
+            .value
+            .trim() || null;
 
 
-/* Resolve typed names to their database IDs */
-
-const selectedCrime =
-    (window.crimeRecords || []).find(
-        crime =>
-            crime.crime_name &&
-            crime.crime_name.toLowerCase() ===
-            crimeName.toLowerCase()
-    );
-
-const selectedComplainant =
-    (window.personRecords || []).find(
-        person => {
-
-            const personName =
-                (person.full_name || "")
-                    .trim()
-                    .replace(/\s+/g, " ");
-
-            const enteredName =
-                complainantName
-                    .trim()
-                    .replace(/\s+/g, " ");
-
-            return (
-                personName.toLowerCase() ===
-                enteredName.toLowerCase()
-            );
-        }
-    );
-
-const selectedOfficer =
-    (window.officerRecords || []).find(
-        officer => {
-
-            const officerDisplayName =
-                officer.name ||
-                officer.full_name ||
-                "";
-
-            return (
-                officerDisplayName.toLowerCase() ===
-                officerName.toLowerCase()
-            );
-        }
-    );
-
-
-/* Validate selected records */
-
-if (!selectedCrime) {
-
-    message.textContent =
-        "Please select a valid crime type from the suggestions.";
-
-    message.className =
-        "form-message error";
-
-    return;
-}
-
-if (!selectedComplainant) {
-
-    message.textContent =
-        "Please select a valid complainant from the suggestions.";
-
-    message.className =
-        "form-message error";
-
-    return;
-}
-
-if (!selectedOfficer) {
-
-    message.textContent =
-        "Please select a valid investigating officer from the suggestions.";
-
-    message.className =
-        "form-message error";
-
-    return;
-}
-
-
-/* Get database IDs */
-
-const crimeId =
-    selectedCrime.crime_id;
-
-const complainantId =
-    selectedComplainant.person_id;
-
-const officerId =
-    selectedOfficer.officer_id;
-    
-    
-
-    // =========================================
-    // EXTRA VALIDATION
-    // =========================================
+    /* =====================================================
+       BASIC VALIDATION
+       ===================================================== */
 
     if (
         !firNumber ||
-        !crimeId ||
-        !stationId ||
-        !complainantId ||
         !incidentDate ||
         !incidentTime ||
         !incidentLocation ||
         !description ||
         !caseTitle ||
-        !officerId ||
         !caseStartDate
     ) {
 
@@ -879,9 +1937,9 @@ const officerId =
     }
 
 
-    // =========================================
-    // DISABLE BUTTON
-    // =========================================
+    /* =====================================================
+       START SUBMISSION
+       ===================================================== */
 
     submitButton.disabled = true;
 
@@ -891,33 +1949,73 @@ const officerId =
 
     try {
 
-        // =====================================
-        // STEP 1
-        // CREATE NEW FIR
-        // =====================================
+        /* =================================================
+           1. GET OR CREATE POLICE STATION
+           ================================================= */
+
+        const stationId =
+            await getOrCreateStation();
+
+
+        /* =================================================
+           2. GET OR CREATE COMPLAINANT
+           ================================================= */
+
+        const complainantId =
+            await getOrCreatePerson();
+
+
+        /* =================================================
+           3. GET OR CREATE CRIME
+           ================================================= */
+
+        const crimeId =
+            await getOrCreateCrime();
+
+
+        /* =================================================
+           4. GET OR CREATE INVESTIGATING OFFICER
+           ================================================= */
+
+        const officerId =
+            await getOrCreateOfficer(stationId);
+
+
+        /* =================================================
+           5. CREATE FIR
+           ================================================= */
 
         const firPayload = {
 
-            fir_number: firNumber,
+            fir_number:
+                firNumber,
 
-            station_id: stationId,
+            station_id:
+                stationId,
 
-            complainant_id: complainantId,
+            complainant_id:
+                complainantId,
 
-            crime_id: crimeId,
+            crime_id:
+                crimeId,
 
-            incident_date: incidentDate,
+            incident_date:
+                incidentDate,
 
-            incident_time: `${incidentTime}:00`,
+            incident_time:
+                `${incidentTime}:00`,
 
-            incident_location: incidentLocation,
+            incident_location:
+                incidentLocation,
 
-            description: description,
+            description:
+                description,
 
-            registration_date: caseStartDate,
+            registration_date:
+                caseStartDate,
 
-            status: "Registered"
-
+            status:
+                "Registered"
         };
 
 
@@ -939,9 +2037,7 @@ const officerId =
                     },
 
                     body:
-                        JSON.stringify(
-                            firPayload
-                        )
+                        JSON.stringify(firPayload)
                 }
             );
 
@@ -971,39 +2067,27 @@ const officerId =
             await firResponse.json();
 
 
+        const firId =
+            createdFir.fir_id;
+
+
         console.log(
             "FIR created:",
             createdFir
         );
 
 
-        // =====================================
-        // GET GENERATED FIR ID
-        // =====================================
-
-        const firId =
-            createdFir.fir_id;
-
-
-        if (!firId) {
-
-            throw new Error(
-                "FIR was created, but no FIR ID was returned."
-            );
-
-        }
-
-
-        // =====================================
-        // STEP 2
-        // CREATE CASE
-        // =====================================
+        /* =================================================
+           6. CREATE CASE
+           ================================================= */
 
         const casePayload = {
 
-            fir_id: firId,
+            fir_id:
+                firId,
 
-            case_title: caseTitle,
+            case_title:
+                caseTitle,
 
             investigating_officer_id:
                 officerId,
@@ -1022,12 +2106,11 @@ const officerId =
 
             remarks:
                 remarks
-
         };
 
 
         console.log(
-            "Creating Case:",
+            "Creating case:",
             casePayload
         );
 
@@ -1044,9 +2127,7 @@ const officerId =
                     },
 
                     body:
-                        JSON.stringify(
-                            casePayload
-                        )
+                        JSON.stringify(casePayload)
                 }
             );
 
@@ -1054,7 +2135,7 @@ const officerId =
         if (!caseResponse.ok) {
 
             let errorMessage =
-                "FIR was registered, but the case could not be created.";
+                "Unable to create the case.";
 
             try {
 
@@ -1076,15 +2157,107 @@ const officerId =
             await caseResponse.json();
 
 
+        const caseId =
+            createdCase.case_id;
+
+
         console.log(
             "Case created:",
             createdCase
         );
 
 
-        // =====================================
-        // SUCCESS
-        // =====================================
+        /* =================================================
+           7. OPTIONAL: GET OR CREATE CRIMINAL
+           ================================================= */
+
+        const criminalId =
+            await getOrCreateCriminal();
+
+
+        /* =================================================
+           8. LINK CRIMINAL TO CASE
+           ================================================= */
+
+        if (criminalId) {
+
+            const criminalStatus =
+                document.getElementById("criminalStatus")
+                    ?.value
+                    .trim() || "Suspect";
+
+
+            const caseCriminalPayload = {
+
+                case_id:
+                    caseId,
+
+                criminal_id:
+                    criminalId,
+
+                involvement:
+                    criminalStatus,
+
+                remarks:
+                    null
+            };
+
+
+            console.log(
+                "Linking criminal to case:",
+                caseCriminalPayload
+            );
+
+
+            const linkResponse =
+                await fetch(
+                    `${API_BASE_URL}/case-criminals/`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                caseCriminalPayload
+                            )
+                    }
+                );
+
+
+            if (!linkResponse.ok) {
+
+                let errorMessage =
+                    "Case was created, but the accused/suspect could not be linked.";
+
+                try {
+
+                    const errorData =
+                        await linkResponse.json();
+
+                    if (errorData.detail) {
+                        errorMessage =
+                            errorData.detail;
+                    }
+
+                } catch (_) {}
+
+                throw new Error(errorMessage);
+            }
+
+
+            console.log(
+                "Criminal linked to case successfully."
+            );
+        }
+
+
+        /* =================================================
+           SUCCESS
+           ================================================= */
 
         message.textContent =
             "FIR and case registered successfully.";
@@ -1097,14 +2270,10 @@ const officerId =
             "Registered";
 
 
-        // =====================================
-        // REFRESH CASE TABLE
-        // =====================================
+        /* Refresh case table */
 
         await loadCases();
 
-
-        // Close after short success message
 
         setTimeout(() => {
 
@@ -1133,9 +2302,7 @@ const officerId =
 
         submitButton.textContent =
             "Register Case";
-
     }
-
 }
 /* =========================================================
    ESCAPE HTML
@@ -1209,7 +2376,15 @@ addCaseModal.addEventListener(
 
 
 /* =========================================================
+   NEW RECORD DETECTION
+   ========================================================= */
+
+setupNewRecordDetection();
+
+
+/* =========================================================
    INITIAL LOAD
    ========================================================= */
 
 loadCases();
+setupNewRecordDetection();
