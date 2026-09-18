@@ -4,6 +4,6 @@ document
 
                 event.preventDefault();
 
-                window.location.href = "dashboard.html";
+                window.location.href = "cases.html";
 
             });

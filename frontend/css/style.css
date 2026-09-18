@@ -3597,15 +3597,13 @@ table tbody tr:hover td {
 }
 
 .recent-cases .case-item {
-    display: grid !important;
-    grid-template-columns: 42px minmax(220px, 1fr) 150px 155px !important;
-    align-items: center !important;
-
-    min-height: 68px !important;
-    padding: 0 20px !important;
-
-    border-bottom: 1px solid #e1e5e9 !important;
-    background: #ffffff !important;
+    display:grid !important;
+    grid-template-columns:42px minmax(220px,1fr) 150px 185px !important;
+    align-items:center !important;
+    min-height:68px !important;
+    padding:0 20px !important;
+    border-bottom:1px solid #e1e5e9 !important;
+    background:#fff !important;
 }
 
 .recent-cases .case-item:last-child {
@@ -3652,9 +3650,17 @@ table tbody tr:hover td {
 /* ---------- STATUS ---------- */
 
 .recent-cases .case-status {
-    justify-self: end !important;
+    justify-self:end !important;
+    white-space:nowrap !important;
 }
 
+.recent-cases .case-status .status {
+    white-space:nowrap !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    min-width:max-content !important;
+}
 /* ---------- MOBILE ---------- */
 
 @media (max-width: 800px) {
@@ -5391,4 +5397,25 @@ table tbody tr:hover td {
     #chargesList .charge-status {
         justify-self: start !important;
     }
+}
+/* Recent Cases - final alignment fix */
+
+.recent-cases .case-row {
+    display: grid !important;
+    grid-template-columns: 42px minmax(220px, 1fr) 150px 185px !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.recent-cases .case-row > .status {
+    justify-self: end !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: max-content !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 5px 10px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
 }

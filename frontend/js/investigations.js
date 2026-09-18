@@ -60,10 +60,11 @@ async function loadInvestigations() {
                         }
 
                         return data.map(investigation => ({
-                            ...investigation,
-                            case_id: caseItem.case_id,
-                            case_title: caseItem.case_title
-                        }));
+    ...investigation,
+    case_id: caseItem.case_id,
+    case_title: caseItem.case_title,
+    case_status: caseItem.status
+}));
 
                     } catch (error) {
 
@@ -146,7 +147,7 @@ function renderInvestigations(data) {
 
 
         const status =
-            investigation.status || "—";
+            investigation.case_status || "—";
 
         const statusClass =
             getStatusClass(status);
@@ -305,10 +306,10 @@ function filterInvestigations() {
 
 
             const matchesStatus =
-                statusValue === "all" ||
-                (investigation.status || "")
-                    .toLowerCase()
-                    .includes(statusValue);
+    statusValue === "all" ||
+    (investigation.case_status || "")
+        .toLowerCase()
+        .includes(statusValue);
 
 
             return (

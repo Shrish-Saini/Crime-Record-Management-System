@@ -134,6 +134,9 @@ async function loadCases() {
             })
 
         );
+    document.getElementById("caseOfficer").dispatchEvent(
+        new Event("input")
+    );
 
 
         await loadOfficerNamesForCases();
@@ -686,8 +689,15 @@ document.getElementById("newCrimeFields").style.display = "none";
 /* =========================================================
    SHOW / HIDE NEW RECORD FIELDS
    ========================================================= */
-
 function setupNewRecordDetection() {
+
+    function normalize(value) {
+        return (value || "")
+            .trim()
+            .replace(/\s+/g, " ")
+            .toLowerCase();
+    }
+
 
     /* -----------------------------------------------------
        POLICE STATION
@@ -700,42 +710,22 @@ function setupNewRecordDetection() {
         document.getElementById("newStationFields");
 
 
-    stationInput.addEventListener("input", () => {
+    stationInput.addEventListener("input", function () {
 
         const enteredName =
-            stationInput.value
-                .trim()
-                .replace(/\s+/g, " ");
-
+            normalize(this.value);
 
         const existingStation =
-            (window.stationRecords || []).find(
-                station => {
-
-                    const existingName =
-                        (station.station_name || "")
-                            .trim()
-                            .replace(/\s+/g, " ");
-
-                    return (
-                        existingName.toLowerCase() ===
-                        enteredName.toLowerCase()
-                    );
-                }
+            (window.stationRecords || []).some(
+                station =>
+                    normalize(station.station_name) ===
+                    enteredName
             );
 
-
-        if (enteredName && !existingStation) {
-
-            newStationFields.style.display =
-                "block";
-
-        } else {
-
-            newStationFields.style.display =
-                "none";
-        }
-
+        newStationFields.style.display =
+            enteredName && !existingStation
+                ? "block"
+                : "none";
     });
 
 
@@ -750,98 +740,75 @@ function setupNewRecordDetection() {
         document.getElementById("newComplainantFields");
 
 
-    complainantInput.addEventListener("input", () => {
+    complainantInput.addEventListener("input", function () {
 
         const enteredName =
-            complainantInput.value
-                .trim()
-                .replace(/\s+/g, " ");
-
+            normalize(this.value);
 
         const existingPerson =
-            (window.personRecords || []).find(
-                person => {
-
-                    const existingName =
-                        (person.full_name || "")
-                            .trim()
-                            .replace(/\s+/g, " ");
-
-                    return (
-                        existingName.toLowerCase() ===
-                        enteredName.toLowerCase()
-                    );
-                }
+            (window.personRecords || []).some(
+                person =>
+                    normalize(person.full_name) ===
+                    enteredName
             );
 
-
-        if (enteredName && !existingPerson) {
-
-            newComplainantFields.style.display =
-                "block";
-
-        } else {
-
-            newComplainantFields.style.display =
-                "none";
-        }
-
+        newComplainantFields.style.display =
+            enteredName && !existingPerson
+                ? "block"
+                : "none";
     });
 
 
     /* -----------------------------------------------------
        INVESTIGATING OFFICER
        ----------------------------------------------------- */
+const officerInput =
+    document.getElementById("caseOfficer");
 
-    const officerInput =
-        document.getElementById("caseOfficer");
-
-    const newOfficerFields =
-        document.getElementById("newOfficerFields");
-
-
-    officerInput.addEventListener("input", () => {
-
-        const enteredName =
-            officerInput.value
-                .trim()
-                .replace(/\s+/g, " ");
+const newOfficerFields =
+    document.getElementById("newOfficerFields");
 
 
-        const existingOfficer =
-            (window.officerRecords || []).find(
-                officer => {
+officerInput.addEventListener("input", () => {
 
-                    const existingName =
-                        (
-                            officer.name ||
-                            officer.full_name ||
-                            ""
-                        )
-                            .trim()
-                            .replace(/\s+/g, " ");
+    const enteredName =
+        officerInput.value
+            .trim()
+            .replace(/\s+/g, " ");
 
-                    return (
-                        existingName.toLowerCase() ===
-                        enteredName.toLowerCase()
-                    );
-                }
-            );
+    const existingOfficer =
+        (window.officerRecords || []).find(
+            officer => {
+
+                const existingName =
+                    (
+                        officer.name ||
+                        officer.full_name ||
+                        ""
+                    )
+                        .trim()
+                        .replace(/\s+/g, " ");
+
+                return (
+                    existingName.toLowerCase() ===
+                    enteredName.toLowerCase()
+                );
+            }
+        );
 
 
-        if (enteredName && !existingOfficer) {
+    if (enteredName && !existingOfficer) {
 
-            newOfficerFields.style.display =
-                "block";
+        newOfficerFields.style.display =
+            "block";
 
-        } else {
+    } else {
 
-            newOfficerFields.style.display =
-                "none";
-        }
+        newOfficerFields.style.display =
+            "none";
+    }
 
-    });
-
+});
 
     /* -----------------------------------------------------
        CRIME TYPE
@@ -854,42 +821,22 @@ function setupNewRecordDetection() {
         document.getElementById("newCrimeFields");
 
 
-    crimeInput.addEventListener("input", () => {
+    crimeInput.addEventListener("input", function () {
 
         const enteredName =
-            crimeInput.value
-                .trim()
-                .replace(/\s+/g, " ");
-
+            normalize(this.value);
 
         const existingCrime =
-            (window.crimeRecords || []).find(
-                crime => {
-
-                    const existingName =
-                        (crime.crime_name || "")
-                            .trim()
-                            .replace(/\s+/g, " ");
-
-                    return (
-                        existingName.toLowerCase() ===
-                        enteredName.toLowerCase()
-                    );
-                }
+            (window.crimeRecords || []).some(
+                crime =>
+                    normalize(crime.crime_name) ===
+                    enteredName
             );
 
-
-        if (enteredName && !existingCrime) {
-
-            newCrimeFields.style.display =
-                "block";
-
-        } else {
-
-            newCrimeFields.style.display =
-                "none";
-        }
-
+        newCrimeFields.style.display =
+            enteredName && !existingCrime
+                ? "block"
+                : "none";
     });
 
 }
@@ -2387,4 +2334,3 @@ setupNewRecordDetection();
    ========================================================= */
 
 loadCases();
-setupNewRecordDetection();
