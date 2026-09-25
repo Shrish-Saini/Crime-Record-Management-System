@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+
 
 const searchInput =
     document.getElementById("courtSearch");
@@ -18,7 +18,7 @@ async function loadCourts() {
 
     try {
 
-        const response = await fetch(
+        const response = await authFetch(
             `${API_BASE_URL}/courts/?skip=0&limit=100`
         );
 

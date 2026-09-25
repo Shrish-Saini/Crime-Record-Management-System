@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+
 
 
 /* LOAD REPORT DATA */
@@ -19,19 +19,19 @@ async function loadReports() {
             judgmentsResponse
         ] = await Promise.all([
 
-            fetch(`${API_BASE_URL}/cases/`),
+            authFetch(`${API_BASE_URL}/cases/`),
 
-            fetch(`${API_BASE_URL}/investigations/`),
+            authFetch(`${API_BASE_URL}/investigations/`),
 
-            fetch(`${API_BASE_URL}/evidence/`),
+            authFetch(`${API_BASE_URL}/evidence/`),
 
-            fetch(`${API_BASE_URL}/arrests/`),
+            authFetch(`${API_BASE_URL}/arrests/`),
 
-            fetch(`${API_BASE_URL}/bail-applications/`),
+            authFetch(`${API_BASE_URL}/bail-applications/`),
 
-            fetch(`${API_BASE_URL}/case-charges/`),
+            authFetch(`${API_BASE_URL}/case-charges/`),
 
-            fetch(`${API_BASE_URL}/judgments/`)
+            authFetch(`${API_BASE_URL}/judgments/`)
 
         ]);
 

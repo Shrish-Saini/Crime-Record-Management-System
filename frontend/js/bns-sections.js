@@ -2,7 +2,6 @@
    BNS SECTIONS
    ========================================================= */
 
-const API_BASE_URL = "http://127.0.0.1:8000";
 
 let bnsSections = [];
 
@@ -30,7 +29,7 @@ async function loadBnsSections() {
         while (true) {
 
             const response =
-                await fetch(
+                await authFetch(
                     `${API_BASE_URL}/bns-sections/?skip=${skip}&limit=${limit}`
                 );
 

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CRMS | Civilian</title>
+</head>
+<body>
+
+    <h1>Crime Record Management System</h1>
+
+    <p>Public Case Search</p>
+
+    <input
+        type="text"
+        id="searchCase"
+        placeholder="Search case..."
+    >
+
+    <button onclick="searchCases()">Search</button>
+
+    <button onclick="logout()">Logout</button>
+
+    <div id="results"></div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        async function searchCases() {
+            const response = await authFetch(
+                "http://127.0.0.1:8000/cases/?skip=0&limit=100"
+            );
+
+            if (!response.ok) {
+                document.getElementById("results").innerHTML =
+                    "<p>Unable to load case records.</p>";
+                return;
+            }
+
+            const cases = await response.json();
+            const search = document
+                .getElementById("searchCase")
+                .value
+                .toLowerCase();
+
+            const filtered = cases.filter(c =>
+                (c.case_title || "").toLowerCase().includes(search)
+            );
+
+            document.getElementById("results").innerHTML =
+                filtered.map(c => `
+                    <div>
+                        <h3>${c.case_title}</h3>
+                        <p>Case ID: ${c.case_id}</p>
+                        <p>Status: ${c.status}</p>
+                        <button onclick="viewCase(${c.case_id})">
+                            View Details
+                        </button>
+                    </div>
+                    <hr>
+                `).join("");
+        }
+
+        function viewCase(caseId) {
+            window.location.href = `case-details.html?case_id=${caseId}`;
+        }
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("crms_token");
+            localStorage.removeItem("crms_user");
+            window.location.href = "index.html";
+        }
+
+        searchCases();
+    </script>
+
+</body>
+</html>

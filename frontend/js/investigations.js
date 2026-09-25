@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+
 
 const searchInput =
     document.getElementById("investigationSearch");
@@ -23,7 +23,7 @@ async function loadInvestigations() {
 
         /* Get all cases first */
 
-        const casesResponse = await fetch(
+        const casesResponse = await authFetch(
             `${API_BASE_URL}/cases/`
         );
 
@@ -45,7 +45,7 @@ async function loadInvestigations() {
 
                     try {
 
-                        const response = await fetch(
+                        const response = await authFetch(
                             `${API_BASE_URL}/cases/${caseItem.case_id}/investigations`
                         );
 

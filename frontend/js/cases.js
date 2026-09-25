@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+
 
 const searchInput = document.getElementById("caseSearch");
 const statusFilter = document.getElementById("statusFilter");
@@ -30,7 +30,7 @@ async function loadOfficerNamesForCases() {
     try {
 
         const response =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/police-officers/?skip=0&limit=100`
             );
 
@@ -75,7 +75,7 @@ async function loadCases() {
 
     try {
 
-        const response = await fetch(`${API_BASE_URL}/cases/`);
+        const response = await authFetch(`${API_BASE_URL}/cases/`);
 
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
@@ -96,7 +96,7 @@ async function loadCases() {
 
                 try {
 
-                    const firResponse = await fetch(
+                    const firResponse = await authFetch(
                         `${API_BASE_URL}/cases/${caseItem.case_id}/fir`
                     );
 
@@ -431,7 +431,7 @@ async function loadStationRecords() {
     try {
 
         const response =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/police-stations/?skip=0&limit=100`
             );
 
@@ -490,7 +490,7 @@ async function loadPersonRecords() {
     try {
 
         const response =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/persons/?skip=0&limit=100`
             );
 
@@ -547,7 +547,7 @@ async function loadCrimeRecords() {
     try {
 
         const response =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/crimes/?skip=0&limit=100`
             );
 
@@ -604,7 +604,7 @@ async function loadOfficerRecords() {
     try {
 
         const response =
-            await fetch(
+            await authFetch (
                 `${API_BASE_URL}/police-officers/?skip=0&limit=100`
             );
 
@@ -958,7 +958,7 @@ async function getOrCreatePerson() {
 
 
     const response =
-        await fetch(
+        await authFetch(
             `${API_BASE_URL}/persons/`,
             {
                 method: "POST",
@@ -1096,7 +1096,7 @@ async function getOrCreateCrime() {
 
 
     const response =
-        await fetch(
+        await authFetch(
             `${API_BASE_URL}/crimes/`,
             {
                 method: "POST",
@@ -1265,7 +1265,7 @@ async function getOrCreateStation() {
 
 
     const response =
-        await fetch(
+        await authFetch(
             `${API_BASE_URL}/police-stations/`,
             {
                 method: "POST",
@@ -1446,7 +1446,7 @@ async function getOrCreateOfficer(stationId) {
 
 
     const response =
-        await fetch(
+        await authFetch(
             `${API_BASE_URL}/police-officers/`,
             {
                 method: "POST",
@@ -1581,7 +1581,7 @@ async function getOrCreateCriminal() {
 
 
         const personResponse =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/persons/`,
                 {
                     method: "POST",
@@ -1645,7 +1645,7 @@ async function getOrCreateCriminal() {
     try {
 
         const response =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/criminals/?skip=0&limit=100`
             );
 
@@ -1724,7 +1724,7 @@ async function getOrCreateCriminal() {
 
 
     const criminalResponse =
-        await fetch(
+        await authFetch(
             `${API_BASE_URL}/criminals/`,
             {
                 method: "POST",
@@ -1973,7 +1973,7 @@ async function createCase(event) {
 
 
         const firResponse =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/fir/`,
                 {
                     method: "POST",
@@ -2063,7 +2063,7 @@ async function createCase(event) {
 
 
         const caseResponse =
-            await fetch(
+            await authFetch(
                 `${API_BASE_URL}/cases/`,
                 {
                     method: "POST",
@@ -2157,7 +2157,7 @@ async function createCase(event) {
 
 
             const linkResponse =
-                await fetch(
+                await authFetch(
                     `${API_BASE_URL}/case-criminals/`,
                     {
                         method: "POST",

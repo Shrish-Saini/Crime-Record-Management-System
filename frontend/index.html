@@ -17,77 +17,154 @@
 
             <!-- Brand -->
             <div class="brand">
-                 <img
-                     src="assets/crms-logo.png"
-                     alt="CRMS - Crime Record Management System"
+
+                <img
+                    src="assets/crms-logo.png"
+                    alt="CRMS - Crime Record Management System"
                     class="crms-logo"
-            >
+                >
+
             </div>
 
 
             <!-- Login Card -->
             <div class="login-card">
 
-                <div class="login-heading">
-                    <h2>Welcome back</h2>
+                <!-- LOGIN SECTION -->
+                <div id="loginSection">
 
-                    <p>
-                        Sign in to access the crime records portal.
-                    </p>
+                    <div class="login-heading">
+
+                        <h2>Welcome back</h2>
+
+                        <p>
+                            Sign in to access the crime records portal.
+                        </p>
+
+                    </div>
+
+
+                    <form id="loginForm">
+
+                        <div class="form-group">
+
+                            <label for="username">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                id="username"
+                                placeholder="Enter your username"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Enter your password"
+                                required
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="login-button"
+                        >
+                            Sign In
+                        </button>
+
+                    </form>
+
+
+                    <div class="login-note">
+                        Authorized personnel only
+                    </div>
+
                 </div>
 
 
-                <form id="loginForm">
+                <!-- OTP SECTION -->
+                <div id="otpSection" style="display: none;">
+
+                    <div class="login-heading">
+
+                        <h2>OTP Verification</h2>
+
+                        <p>
+                            Enter the simulated OTP generated for this login.
+                        </p>
+
+                    </div>
+
+
+                    <div class="simulated-otp">
+
+                        <span>SIMULATED OTP</span>
+
+                        <strong id="demoOTP">
+                            ------
+                        </strong>
+
+                    </div>
+
 
                     <div class="form-group">
 
-                        <label for="username">
-                            Username
+                        <label for="otpInput">
+                            Enter OTP
                         </label>
 
                         <input
                             type="text"
-                            id="username"
-                            placeholder="Enter your username"
-                            required
+                            id="otpInput"
+                            maxlength="6"
+                            inputmode="numeric"
+                            placeholder="Enter 6-digit OTP"
                         >
 
                     </div>
 
 
-                    <div class="form-group">
-
-                        <label for="password">
-                            Password
-                        </label>
-
-                        <input
-                            type="password"
-                            id="password"
-                            placeholder="Enter your password"
-                            required
-                        >
-
-                    </div>
+                    <p id="otpTimer">
+                        Expires in 60 seconds
+                    </p>
 
 
                     <button
-                        type="submit"
+                        type="button"
                         class="login-button"
+                        onclick="verifyOTP()"
                     >
-                        Sign In
+                        Verify OTP
                     </button>
 
-                </form>
 
+                    <button
+                        type="button"
+                        onclick="resendOTP()"
+                        class="secondary-button"
+                    >
+                        Resend OTP
+                    </button>
 
-                <div class="login-note">
-                    Authorized personnel only
                 </div>
 
             </div>
 
 
+            <!-- Footer -->
             <div class="footer-text">
                 Crime Record Management System · 2026
             </div>

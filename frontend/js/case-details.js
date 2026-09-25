@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+
 
 const params = new URLSearchParams(window.location.search);
 const caseId = params.get("case_id");
@@ -37,22 +37,30 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
-async function fetchJSON(endpoint, fallback = null) {
+async function fetchJSON(endpoint, fallback) {
     try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`);
+        const token = localStorage.getItem("access_token");
 
-        if (response.status === 404) {
-            return fallback;
-        }
+        const response = await fetch(
+            `http://127.0.0.1:8000${endpoint}`,
+            {
+                method: "GET",
+                headers: token
+                    ? {
+                        "Authorization": `Bearer ${token}`
+                    }
+                    : {}
+            }
+        );
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            throw new Error(`HTTP error: ${response.status}`);
         }
 
         return await response.json();
 
     } catch (error) {
-        console.error(`API error for ${endpoint}:`, error);
+        console.error(`Failed to load ${endpoint}:`, error);
         return fallback;
     }
 }
@@ -84,7 +92,7 @@ async function loadCaseDetails(caseId) {
      */
 
     const [
-        caseData,
+        caseList,
         fir,
         timelineData,
         accusedData,
@@ -101,7 +109,7 @@ async function loadCaseDetails(caseId) {
         imprisonmentData
     ] = await Promise.all([
 
-        fetchJSON(`/cases/${caseId}`, null),
+        fetchJSON(`/cases/?skip=0&limit=100`, []),
 
         fetchJSON(`/cases/${caseId}/fir`, null),
 
@@ -131,6 +139,9 @@ async function loadCaseDetails(caseId) {
 
         fetchJSON(`/cases/${caseId}/imprisonment`, [])
     ]);
+    const caseData = Array.isArray(caseList)
+    ? caseList.find(c => String(c.case_id) === String(caseId))
+    : null;
 
 
     /* case information */

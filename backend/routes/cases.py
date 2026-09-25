@@ -1,15 +1,14 @@
 from typing import Any, Dict, List, Optional
-
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import text
+from fastapi import HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-
+from routes.auth import get_current_user, require_case_access
 from database import get_db
+from routes.auth import get_current_user, security
 from models.case import Case
 from schemas.case import CaseCreate, CaseResponse, CaseUpdate
-
-
 router = APIRouter(
     prefix="/cases",
     tags=["Cases"]
@@ -41,75 +40,251 @@ def _query_row(db: Session, sql: str, case_id: int) -> Optional[Dict[str, Any]]:
     return rows[0] if rows else None
 
 
-@router.get("/", response_model=List[CaseResponse])
+@router.get(
+    "/",
+    response_model=List[CaseResponse],
+    dependencies=[Depends(security)]
+)
 def get_cases(
+
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
     status_filter: Optional[str] = Query(default=None, alias="status"),
     investigating_officer_id: Optional[int] = Query(default=None, gt=0),
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     query = db.query(Case)
+
+    if current_user["role"] == "police_officer":
+        station_id = db.execute(
+            text("""
+                SELECT station_id
+                FROM police_officers
+                WHERE officer_id = :officer_id
+            """),
+            {
+                "officer_id": current_user["officer_id"]
+            }
+        ).scalar()
+
+        if station_id is None:
+            raise HTTPException(
+                status_code=403,
+                detail="Police officer is not assigned to a station"
+            )
+
+        cases = db.execute(
+            text("""
+                SELECT
+                    c.case_id,
+                    c.fir_id,
+                    c.case_title,
+                    c.investigating_officer_id,
+                    c.start_date,
+                    c.status,
+                    c.outcome,
+                    c.closing_date,
+                    c.remarks
+                FROM cases c
+                INNER JOIN fir f ON c.fir_id = f.fir_id
+                WHERE f.station_id = :station_id
+                ORDER BY c.case_id
+                LIMIT :limit OFFSET :skip
+            """),
+            {
+                "station_id": station_id,
+                "limit": limit,
+                "skip": skip
+            }
+        ).mappings().all()
+
+        return [dict(row) for row in cases]
     if status_filter:
         query = query.filter(Case.status == status_filter)
+
     if investigating_officer_id:
-        query = query.filter(Case.investigating_officer_id == investigating_officer_id)
-    cases = query.order_by(Case.case_id).offset(skip).limit(limit).all()
+        query = query.filter(
+            Case.investigating_officer_id == investigating_officer_id
+        )
+
+    # Police officers can only see cases from their own station
+    if current_user["role"] == "police_officer":
+
+        station_id = db.execute(
+            text("""
+                SELECT station_id
+                FROM police_officers
+                WHERE officer_id = :officer_id
+            """),
+            {"officer_id": current_user["officer_id"]}
+        ).scalar()
+
+        allowed_firs = db.execute(
+            text("""
+                SELECT fir_id
+                FROM fir
+                WHERE station_id = :station_id
+            """),
+            {"station_id": station_id}
+        ).scalars().all()
+
+        if not allowed_firs:
+            return []
+
+        query = query.filter(Case.fir_id.in_(allowed_firs))
+
+    cases = (
+        query
+        .order_by(Case.case_id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
     return cases
-
 @router.get("/{case_id}", response_model=CaseResponse)
-def get_case(case_id: int, db: Session = Depends(get_db)):
-    return _get_case_or_404(case_id, db)
+def get_case(
+    case_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    require_case_access(
+        case_id,
+        current_user,
+        db,
+        write=False
+    )
 
+    return require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
 
 @router.post("/", response_model=CaseResponse, status_code=status.HTTP_201_CREATED)
-def create_case(payload: CaseCreate, db: Session = Depends(get_db)):
-    if db.query(Case.case_id).filter(Case.fir_id == payload.fir_id).first():
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="A case already exists for this FIR")
+def create_case(
+    payload: CaseCreate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+
+    if current_user["role"] == "civilian":
+        raise HTTPException(
+            status_code=403,
+            detail="Civilian users cannot create cases"
+        )
+
+    if current_user["role"] == "police_officer":
+
+        station_id = db.execute(
+            text("""
+                SELECT station_id
+                FROM police_officers
+                WHERE officer_id = :officer_id
+            """),
+            {"officer_id": current_user["officer_id"]}
+        ).scalar()
+
+        fir_station = db.execute(
+            text("""
+                SELECT station_id
+                FROM fir
+                WHERE fir_id = :fir_id
+            """),
+            {"fir_id": payload.fir_id}
+        ).scalar()
+
+        if fir_station != station_id:
+            raise HTTPException(
+                status_code=403,
+                detail="You can only create cases for your own police station"
+            )
+
+    if db.query(Case.case_id).filter(
+        Case.fir_id == payload.fir_id
+    ).first():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A case already exists for this FIR"
+        )
 
     case = Case(**payload.model_dump())
+
     db.add(case)
-    _commit_or_conflict(db, "Unable to create case: FIR or related record is invalid")
+
+    _commit_or_conflict(
+        db,
+        "Unable to create case: FIR or related record is invalid"
+    )
+
     db.refresh(case)
+
     return case
-
-
-
 @router.put("/{case_id}", response_model=CaseResponse)
 @router.patch("/{case_id}", response_model=CaseResponse)
-def update_case(case_id: int, payload: CaseUpdate, db: Session = Depends(get_db)):
-    case = _get_case_or_404(case_id, db)
+def update_case(
+    case_id: int,
+    payload: CaseUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    require_case_access(
+        case_id,
+        current_user,
+        db,
+        write=True
+    )
+
+    case = require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
+
     changes = payload.model_dump(exclude_unset=True)
 
-    if "fir_id" in changes and changes["fir_id"] != case.fir_id:
-        duplicate = db.query(Case.case_id).filter(Case.fir_id == changes["fir_id"], Case.case_id != case_id).first()
-        if duplicate:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="A case already exists for this FIR")
-
-    proposed_start = changes.get("start_date", case.start_date)
-    proposed_closing = changes.get("closing_date", case.closing_date)
-    if proposed_start and proposed_closing and proposed_closing < proposed_start:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="closing_date cannot be earlier than start_date")
-
-    for field, value in changes.items():
-        setattr(case, field, value)
-
-    _commit_or_conflict(db, "Unable to update case: FIR or related record is invalid")
-    db.refresh(case)
-    return case
-
+    # Keep your existing validation below this line
 
 @router.delete("/{case_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_case(case_id: int, db: Session = Depends(get_db)):
-    case = _get_case_or_404(case_id, db)
+def delete_case(
+    case_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    require_case_access(
+        case_id,
+        current_user,
+        db,
+        write=True
+    )
+
+    case = require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
+
     db.delete(case)
-    _commit_or_conflict(db, "Unable to delete case because it is referenced by another record")
+
+    _commit_or_conflict(
+        db,
+        "Unable to delete case because it is referenced by another record"
+    )
+
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-
 @router.get("/{case_id}/timeline")
-def get_case_timeline(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_timeline(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -128,8 +303,13 @@ def get_case_timeline(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/fir")
-def get_case_fir(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_fir(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_row(
         db,
         """
@@ -152,8 +332,13 @@ def get_case_fir(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/criminals")
-def get_case_criminals(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_criminals(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -172,8 +357,13 @@ def get_case_criminals(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/victims")
-def get_case_victims(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_victims(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -190,8 +380,13 @@ def get_case_victims(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/evidence")
-def get_case_evidence(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_evidence(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -209,8 +404,13 @@ def get_case_evidence(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/investigations")
-def get_case_investigations(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_investigations(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -227,8 +427,13 @@ def get_case_investigations(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/arrests")
-def get_case_arrests(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_arrests(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -248,8 +453,13 @@ def get_case_arrests(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/bail")
-def get_case_bail(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_bail(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -268,8 +478,13 @@ def get_case_bail(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/charges")
-def get_case_charges(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_charges(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -289,8 +504,13 @@ def get_case_charges(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/chargesheet")
-def get_case_chargesheet(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_chargesheet(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_row(
         db,
         """
@@ -309,8 +529,13 @@ def get_case_chargesheet(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/proceedings")
-def get_case_proceedings(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_proceedings(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -328,8 +553,13 @@ def get_case_proceedings(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/judgment")
-def get_case_judgment(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_judgment(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_row(
         db,
         """
@@ -346,8 +576,13 @@ def get_case_judgment(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/sentences")
-def get_case_sentences(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_sentences(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -367,8 +602,13 @@ def get_case_sentences(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/imprisonment")
-def get_case_imprisonment(case_id: int, db: Session = Depends(get_db)):
-    _get_case_or_404(case_id, db)
+def get_case_imprisonment(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     return _query_rows(
         db,
         """
@@ -391,8 +631,13 @@ def get_case_imprisonment(case_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{case_id}/details")
-def get_case_details(case_id: int, db: Session = Depends(get_db)):
-    case = _get_case_or_404(case_id, db)
+def get_case_details(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    case = require_case_access(
+    case_id,
+    current_user,
+    db,
+    write=False
+)
     fir = get_case_fir(case_id, db)
     officer = _query_row(
         db,

@@ -3,7 +3,10 @@
 The database is reflected for reads only.  This keeps the API aligned with the
 live 24-table MySQL schema without creating, migrating, or altering any table.
 """
+from numpy import record
 
+from database import engine, get_db
+from routes.auth import get_current_user, require_case_access
 from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Any, Dict, List, Optional, Type
@@ -45,14 +48,102 @@ RESOURCE_TABLES = {
 
 READ_ONLY_TABLES = {"bns_sections"}
 SENSITIVE_COLUMNS = {"password"}
+def require_role(current_user, allowed_roles):
+    if current_user["role"] not in allowed_roles:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not authorized to access this resource"
+        )
 
+
+def require_write_access(current_user):
+    if current_user["role"] == "civilian":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Civilian users have read-only access"
+        )
 metadata = MetaData()
 metadata.reflect(bind=engine, only=list(RESOURCE_TABLES) + ["case_criminals"])
 
 router = APIRouter(tags=["Resources"])
 case_criminals_router = APIRouter(prefix="/case-criminals", tags=["Case Criminals"])
 
+def get_user_station_id(current_user, db):
+    if current_user["role"] != "police_officer":
+        return None
 
+    station_id = db.execute(
+        text("""
+            SELECT station_id
+            FROM police_officers
+            WHERE officer_id = :officer_id
+        """),
+        {"officer_id": current_user["officer_id"]}
+    ).scalar()
+
+    if station_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Police officer is not assigned to a station"
+        )
+
+    return station_id
+def require_resource_access(
+    table_name,
+    record,
+    current_user,
+    db,
+    write=False
+):
+    # Superintendent can access everything
+    if current_user["role"] == "superintendent":
+        return
+
+    # Civilian can only read
+    if current_user["role"] == "civilian":
+        if write:
+            raise HTTPException(
+                status_code=403,
+                detail="Civilian users have read-only access"
+            )
+        return
+
+    # Police officer
+    if current_user["role"] == "police_officer":
+
+        station_id = get_user_station_id(current_user, db)
+
+        # FIR directly contains station_id
+        if table_name == "fir":
+            if record.get("station_id") != station_id:
+                raise HTTPException(
+                    status_code=403,
+                    detail="You are not authorized to access records from another police station"
+                )
+            return
+
+        # Most operational records are connected to a case
+        if "case_id" in record:
+            require_case_access(
+                record["case_id"],
+                current_user,
+                db,
+                write=write
+            )
+            return
+
+        # Police officers cannot access personnel records
+        if table_name in ("police_officers", "users"):
+            raise HTTPException(
+                status_code=403,
+                detail="Police personnel records are restricted"
+            )
+
+        # Other global reference data can be read
+        if not write:
+            return
+
+        return
 def _python_type(column: Any) -> Type[Any]:
     column_type = column.type
     if isinstance(column_type, Boolean):
@@ -135,15 +226,44 @@ def _register_single_key_resource(table_name: str, label: str) -> None:
     update_schema = _schema_for(table, f"{table_name.title().replace('_', '')}Update", mode="update")
 
     def list_records(
-        skip: int = Query(default=0, ge=0),
-        limit: int = Query(default=100, ge=1, le=500),
-        db: Session = Depends(get_db),
-    ):
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500),
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+                # Police personnel records are only available to Superintendent
+        if table_name == "police_officers":
+            require_role(current_user, ["superintendent"])
+
+        if table_name == "users":
+            require_role(current_user, ["superintendent"])
+
+        # BNS can be viewed by everyone
         records = db.execute(select(table).offset(skip).limit(limit)).mappings().all()
         return [_serialize(dict(record)) for record in records]
 
-    def get_record(record_id: int, db: Session = Depends(get_db)):
-        return _serialize(_get_record_or_404(db, table, primary_key, record_id))
+    def get_record(
+    record_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+        if table_name in ("police_officers", "users"):
+            require_role(current_user, ["superintendent"])
+        record = _get_record_or_404(
+                db,
+                table,
+                primary_key,
+                record_id
+            )
+
+        require_resource_access(
+                table_name,
+                record,
+                current_user,
+                db
+            )
+
+        return _serialize(record)
 
     router.add_api_route(
         route_prefix + "/",
@@ -165,13 +285,16 @@ def _register_single_key_resource(table_name: str, label: str) -> None:
     if table_name in READ_ONLY_TABLES:
         return
 
-    def create_record(payload: create_schema, db: Session = Depends(get_db)):
+    def create_record(payload: create_schema, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+        require_write_access(current_user)
+        
         values = payload.model_dump(exclude_unset=True)
         result = _execute_write(db, insert(table).values(**values), "create", table_name)
         inserted_id = result.inserted_primary_key[0]
         return _serialize(_get_record_or_404(db, table, primary_key, inserted_id))
 
-    def update_record(record_id: int, payload: update_schema, db: Session = Depends(get_db)):
+    def update_record(record_id: int, payload: update_schema, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+        require_write_access(current_user)
         _get_record_or_404(db, table, primary_key, record_id)
         values = payload.model_dump(exclude_unset=True)
         if not values:
@@ -181,8 +304,22 @@ def _register_single_key_resource(table_name: str, label: str) -> None:
         _execute_write(db, update(table).where(primary_key == record_id).values(**values), "update", table_name)
         return _serialize(_get_record_or_404(db, table, primary_key, record_id))
 
-    def delete_record(record_id: int, db: Session = Depends(get_db)):
-        _get_record_or_404(db, table, primary_key, record_id)
+    def delete_record(record_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+        require_write_access(current_user)
+        record = _get_record_or_404(
+            db,
+            table,
+            primary_key,
+            record_id
+        )
+        require_resource_access(
+            table_name,
+            record,
+            current_user,
+            db,
+            write=True
+        )
+
         _execute_write(db, delete(table).where(primary_key == record_id), "delete", table_name)
         return {"detail": f"{label} deleted"}
 
@@ -269,17 +406,32 @@ def _case_criminal_detail(db: Session, case_id: int, criminal_id: int) -> Dict[s
 
 
 @case_criminals_router.get("/")
-def list_case_criminals(db: Session = Depends(get_db)):
+def list_case_criminals(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
     return _case_criminal_rows(db)
 
 
 @case_criminals_router.get("/{case_id}/{criminal_id}")
-def get_case_criminal(case_id: int, criminal_id: int, db: Session = Depends(get_db)):
+def get_case_criminal(
+    case_id: int,
+    criminal_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    require_case_access(case_id, current_user, db)
+
     return _case_criminal_detail(db, case_id, criminal_id)
 
 
 @case_criminals_router.post("/", status_code=status.HTTP_201_CREATED)
-def create_case_criminal(payload: CaseCriminalCreate, db: Session = Depends(get_db)):
+def create_case_criminal(
+    payload: CaseCriminalCreate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    require_case_access(payload.case_id, current_user, db, write=True)
     table = metadata.tables["case_criminals"]
     values = payload.model_dump()
     _execute_write(db, insert(table).values(**values), "create", "case-criminal relationship")
@@ -288,7 +440,14 @@ def create_case_criminal(payload: CaseCriminalCreate, db: Session = Depends(get_
 
 @case_criminals_router.put("/{case_id}/{criminal_id}")
 @case_criminals_router.patch("/{case_id}/{criminal_id}")
-def update_case_criminal(case_id: int, criminal_id: int, payload: CaseCriminalUpdate, db: Session = Depends(get_db)):
+def update_case_criminal(
+    case_id: int,
+    criminal_id: int,
+    payload: CaseCriminalUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    require_case_access(case_id, current_user, db, write=True)
     table = metadata.tables["case_criminals"]
     _case_criminal_or_404(db, case_id, criminal_id)
     values = payload.model_dump(exclude_unset=True)
@@ -304,7 +463,13 @@ def update_case_criminal(case_id: int, criminal_id: int, payload: CaseCriminalUp
 
 
 @case_criminals_router.delete("/{case_id}/{criminal_id}")
-def delete_case_criminal(case_id: int, criminal_id: int, db: Session = Depends(get_db)):
+def delete_case_criminal(
+    case_id: int,
+    criminal_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    require_case_access(case_id, current_user, db, write=True)
     table = metadata.tables["case_criminals"]
     _case_criminal_or_404(db, case_id, criminal_id)
     _execute_write(

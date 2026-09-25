@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
+from routes.auth import router as auth_router
 from database import engine
 from routes.cases import router as cases_router
 from routes.resources import case_criminals_router, router as resources_router
@@ -25,7 +26,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+app.include_router(auth_router)
 app.include_router(cases_router)
 app.include_router(resources_router)
 app.include_router(case_criminals_router)
