@@ -317,3 +317,47 @@ def require_case_access(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Unauthorized role"
     )
+@router.get("/officer-profile")
+def officer_profile(
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    if current_user["role"] != "police_officer":
+        raise HTTPException(
+            status_code=403,
+            detail="Only police officers can access this profile"
+        )
+
+    officer = db.execute(
+        text("""
+            SELECT
+                po.officer_id,
+                po.name,
+                po.rank,
+                po.badge_number,
+                po.phone,
+                po.email,
+                po.joining_date,
+                po.status,
+                ps.station_id,
+                ps.station_name,
+                ps.address,
+                ps.city,
+                ps.state,
+                ps.pincode,
+                ps.phone AS station_phone
+            FROM police_officers po
+            JOIN police_stations ps
+                ON po.station_id = ps.station_id
+            WHERE po.officer_id = :officer_id
+        """),
+        {"officer_id": current_user["officer_id"]}
+    ).mappings().one_or_none()
+
+    if officer is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Officer profile not found"
+        )
+
+    return dict(officer)

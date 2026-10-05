@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
-
+from routes.person_search import router as person_search_router
 from routes.auth import router as auth_router
 from database import engine
 from routes.cases import router as cases_router
@@ -23,14 +23,14 @@ app.add_middleware(
         "http://localhost:5500"
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 app.include_router(auth_router)
 app.include_router(cases_router)
 app.include_router(resources_router)
 app.include_router(case_criminals_router)
-
+app.include_router(person_search_router)
 
 @app.exception_handler(RequestValidationError)
 async def request_validation_error_handler(request: Request, exc: RequestValidationError):

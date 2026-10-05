@@ -3,6 +3,8 @@
 The database is reflected for reads only.  This keeps the API aligned with the
 live 24-table MySQL schema without creating, migrating, or altering any table.
 """
+from unittest import skip
+
 from numpy import record
 
 from database import engine, get_db
@@ -224,23 +226,35 @@ def _register_single_key_resource(table_name: str, label: str) -> None:
     response_schema = _schema_for(table, f"{table_name.title().replace('_', '')}Response", mode="response")
     create_schema = _schema_for(table, f"{table_name.title().replace('_', '')}Create", mode="create")
     update_schema = _schema_for(table, f"{table_name.title().replace('_', '')}Update", mode="update")
-
-    def list_records(
+def list_records(
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-                # Police personnel records are only available to Superintendent
-        if table_name == "police_officers":
+
+    # Police personnel records are only available to Superintendent
+    if table_name == "users":
+        require_role(current_user, ["superintendent"])
+
+    if table_name == "police_officers":
+        if current_user["role"] == "police_officer":
+            if record_id != current_user["officer_id"]:
+                raise HTTPException(
+                    status_code=403,
+                    detail="You can only access your own officer record"
+                )
+        else:
             require_role(current_user, ["superintendent"])
 
-        if table_name == "users":
-            require_role(current_user, ["superintendent"])
+    if table_name == "users":
+        require_role(current_user, ["superintendent"])
 
-        # BNS can be viewed by everyone
-        records = db.execute(select(table).offset(skip).limit(limit)).mappings().all()
-        return [_serialize(dict(record)) for record in records]
+    records = db.execute(
+        select(table).offset(skip).limit(limit)
+    ).mappings().all()
+
+    return [_serialize(dict(record)) for record in records]
 
     def get_record(
     record_id: int,
@@ -248,7 +262,7 @@ def _register_single_key_resource(table_name: str, label: str) -> None:
     current_user=Depends(get_current_user),
 ):
         if table_name in ("police_officers", "users"):
-            require_role(current_user, ["superintendent"])
+            require_role(current_user, [""])
         record = _get_record_or_404(
                 db,
                 table,

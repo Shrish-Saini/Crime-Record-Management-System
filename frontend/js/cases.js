@@ -1,5 +1,11 @@
+const user = requireRole(["superintendent"]);
 
+if (!user) {
+    throw new Error("Unauthorized");
+}
 
+const currentUser = user;
+const userRole = currentUser.role;
 const searchInput = document.getElementById("caseSearch");
 const statusFilter = document.getElementById("statusFilter");
 const crimeFilter = document.getElementById("crimeFilter");
@@ -20,7 +26,13 @@ const addCaseMessage = document.getElementById("addCaseMessage");
 let cases = [];
 let firRecords = [];
 let officerRecords = [];
+document.addEventListener("DOMContentLoaded", () => {
+    const addCaseBtn = document.getElementById("addCaseBtn");
 
+    if (userRole === "civilian" && addCaseBtn) {
+        addCaseBtn.style.display = "none";
+    }
+});
 /* =========================================================
    LOAD OFFICER NAMES FOR CASES
    ========================================================= */

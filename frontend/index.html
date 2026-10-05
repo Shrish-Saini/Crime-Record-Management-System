@@ -1,39 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>CRMS | Crime Record Management System</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 
 <body>
-
     <div class="login-page">
 
-        <div class="login-container">
+        <div class="login-layout">
 
-            <!-- Brand -->
-            <div class="brand">
+            <!-- LEFT INFORMATION PANEL -->
+            <div class="login-info">
 
                 <img
                     src="assets/crms-logo.png"
-                    alt="CRMS - Crime Record Management System"
-                    class="crms-logo"
+                    alt="CRMS Logo"
+                    class="login-logo"
                 >
+
+                <p class="system-label">
+                    CRIME RECORD MANAGEMENT SYSTEM
+                </p>
+
+                <h1>
+                    Crime records.<br>
+                    Managed securely.
+                </h1>
+
+                <p class="login-description">
+                    A centralized digital platform for managing
+                    criminal cases, investigations, evidence,
+                    FIRs and court proceedings.
+                </p>
+
+                <div class="system-features">
+
+    <div class="feature-item">
+        <span>01</span>
+        <div>
+            <strong>Case Management</strong>
+            <p>
+                Register, organize and manage criminal cases and FIR records.
+            </p>
+        </div>
+    </div>
+
+    <div class="feature-item">
+        <span>02</span>
+        <div>
+            <strong>Investigations</strong>
+            <p>
+                Track investigations, officers, evidence and case progress.
+            </p>
+        </div>
+    </div>
+
+    <div class="feature-item">
+        <span>03</span>
+        <div>
+            <strong>Justice Records</strong>
+            <p>
+                Maintain court proceedings, judgments, sentences and bail records.
+            </p>
+        </div>
+    </div>
+
+    <div class="feature-item">
+        <span>04</span>
+        <div>
+            <strong>Secure Access</strong>
+            <p>
+                Role-based access keeps sensitive criminal records protected.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="system-overview">
+
+    <p class="overview-label">
+        SYSTEM CAPABILITIES
+    </p>
+
+    <div class="overview-items">
+
+        <span>Case Records</span>
+        <span>FIR Management</span>
+        <span>Evidence Tracking</span>
+        <span>Investigations</span>
+        <span>Court Records</span>
+        <span>BNS Sections</span>
+
+    </div>
+
+</div>
+
+
+<p class="security-note">
+    Secure access · Role-based records · Centralized database
+</p>
 
             </div>
 
 
-            <!-- Login Card -->
-            <div class="login-card">
+            <!-- RIGHT LOGIN SECTION -->
+            <div class="login-section">
 
-                <!-- LOGIN SECTION -->
-                <div id="loginSection">
+                <div class="login-card">
 
                     <div class="login-heading">
+
+                        <p class="login-eyebrow">
+                            SECURE PORTAL
+                        </p>
 
                         <h2>Welcome back</h2>
 
@@ -92,39 +179,28 @@
                         Authorized personnel only
                     </div>
 
-                </div>
 
+                    <!-- OTP SECTION -->
+                    <div id="otpSection" style="display: none;">
 
-                <!-- OTP SECTION -->
-                <div id="otpSection" style="display: none;">
+                        <div class="otp-heading">
+                            <h3>OTP Verification</h3>
 
-                    <div class="login-heading">
+                            <p>
+                                Enter the simulated OTP generated
+                                for this login.
+                            </p>
+                        </div>
 
-                        <h2>OTP Verification</h2>
+                        <div class="simulated-otp">
 
-                        <p>
-                            Enter the simulated OTP generated for this login.
-                        </p>
+                            <span>SIMULATED OTP</span>
 
-                    </div>
+                            <strong id="demoOTP">
+                                ------
+                            </strong>
 
-
-                    <div class="simulated-otp">
-
-                        <span>SIMULATED OTP</span>
-
-                        <strong id="demoOTP">
-                            ------
-                        </strong>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="otpInput">
-                            Enter OTP
-                        </label>
+                        </div>
 
                         <input
                             type="text"
@@ -134,39 +210,32 @@
                             placeholder="Enter 6-digit OTP"
                         >
 
+                        <p id="otpTimer">
+                            Expires in 60 seconds
+                        </p>
+
+                        <button
+                            type="button"
+                            onclick="verifyOTP()"
+                        >
+                            Verify OTP
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="resendOTP()"
+                        >
+                            Resend OTP
+                        </button>
+
                     </div>
-
-
-                    <p id="otpTimer">
-                        Expires in 60 seconds
-                    </p>
-
-
-                    <button
-                        type="button"
-                        class="login-button"
-                        onclick="verifyOTP()"
-                    >
-                        Verify OTP
-                    </button>
-
-
-                    <button
-                        type="button"
-                        onclick="resendOTP()"
-                        class="secondary-button"
-                    >
-                        Resend OTP
-                    </button>
 
                 </div>
 
-            </div>
+                <p class="footer-text">
+                    Crime Record Management System · 2026
+                </p>
 
-
-            <!-- Footer -->
-            <div class="footer-text">
-                Crime Record Management System · 2026
             </div>
 
         </div>
@@ -174,7 +243,6 @@
     </div>
 
 
-    <script src="js/login.js"></script>
+    <script src="js/login.js?v=2"></script>
 
 </body>
-</html>

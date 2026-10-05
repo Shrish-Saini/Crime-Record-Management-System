@@ -3,12 +3,12 @@
 ========================================================= */
 
 :root {
-    --black: #000000;
+    --black: #ffffff;
     
-    --sidebar: #000000;
-    --white: #f5f7fa;
-    --muted: #aeb9c7;
-    --line: #d7dee7;
+    --sidebar: #ffffff;
+    --white: #000000;
+    --muted: #000000;
+    --line: #000000;
 }
 
 
@@ -28,7 +28,7 @@
 html,
 body {
     min-height: 100%;
-    background: var(--black);
+    background: var(--white);
     color: var(--white);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
@@ -77,8 +77,8 @@ button {
 
 .login-card {
     padding: 28px;
-    background: var(--black-light);
-    border: 1px dotted var(--white);
+    background: var(--white-light);
+    border: 1px dotted var(--black);
     text-align: left;
 }
 
@@ -111,18 +111,18 @@ label {
 .login-card input {
     width: 100%;
     padding: 11px 12px;
-    background: var(--black);
-    color: var(--white);
-    border: 1px dotted var(--white);
+    background: var(--white);
+    color: var(--black);
+    border: 1px dotted var(--black);
     outline: none;
 }
 
 .login-button {
     width: 100%;
     padding: 11px;
-    background: var(--black-light);
-    color: var(--white);
-    border: 1px solid var(--white);
+    background: var(--white-light);
+    color: var(--black);
+    border: 1px solid var(--black);
 }
 
 
@@ -170,7 +170,7 @@ label {
     min-height: 46px;
     padding: 10px 14px;
 
-    color: var(--white);
+    color: var(--black);
 
     border: 1px solid transparent;
 
@@ -184,7 +184,7 @@ label {
 }
 
 .nav-link.active {
-    background: #000000 !important;
+    background: #b1b3b1!important;
     border: 1px dotted var(--line);
 }
 
@@ -219,7 +219,7 @@ label {
     margin-left: 245px;
     min-height: 100vh;
 
-    background: var(--black);
+    background: var(--white);
 }
 
 .topbar {
@@ -231,7 +231,7 @@ label {
 
     padding: 0 28px;
 
-    background: var(--black);
+    background: var(--white);
     border-bottom: 1px dotted var(--line);
 }
 
@@ -320,12 +320,12 @@ label {
 .section-card,
 .quick-card,
 .cases-card {
-    background: var(--black-light) !important;
+    background: var(--white-light) !important;
 
     border: 1px dotted var(--line) !important;
     border-radius: 0 !important;
 
-    color: var(--white);
+    color: var(--black);
 }
 
 .content-card,
@@ -350,7 +350,7 @@ label {
 }
 
 .card-header p {
-    color: var(--muted);
+    color: var(--black);
 }
 
 
@@ -382,7 +382,7 @@ label {
 
 .search-icon {
     padding-left: 10px;
-    color: var(--muted);
+    color: var(--black);
 }
 
 input,
@@ -393,7 +393,7 @@ textarea {
     padding: 10px 12px;
 
     background: var(--sidebar) !important;
-    color: var(--white) !important;
+    color: var(--black) !important;
 
     border: 1px dotted var(--line) !important;
     border-radius: 0 !important;
@@ -403,7 +403,7 @@ textarea {
 
 input::placeholder,
 textarea::placeholder {
-    color: #8d9aaa;
+    color: #000000;
 }
 
 input:focus,
@@ -414,7 +414,7 @@ textarea:focus {
 
 select option {
     background: var(--sidebar);
-    color: var(--white);
+    color: var(--black);
 }
 
 
@@ -1023,6 +1023,393 @@ button:hover,
 
     .filters-card,
     .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================================
+   FORCE ALL UI TEXT TO BLACK
+   ========================================================= */
+
+body,
+body *,
+body *::before,
+body *::after {
+    color: #000000 !important;
+}
+/* ================================
+   GLOBAL PAGE BACKGROUND
+   ================================ */
+
+html,
+body {
+    background: #f5f7fa !important;
+    color: #111827 !important;
+}
+
+/* Main application area */
+.main-content,
+.main,
+.content,
+.page-content,
+.content-area {
+    background: #f5f7fa !important;
+    color: #111827 !important;
+}
+
+/* Header / top area */
+.topbar,
+.page-header,
+.header {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+
+/* Cards and sections */
+.content-card,
+.card,
+.filters-card,
+.table-card,
+.records-card,
+.section-card {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+
+/* Tables */
+table,
+thead,
+tbody,
+tr,
+th,
+td {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+/* ================================
+    GREEN SIDEBAR
+   ================================ */
+
+.sidebar {
+    background: #DDE8D5 !important;
+    color: #172117 !important;
+}
+
+/* Sidebar navigation text */
+.sidebar a,
+.sidebar span,
+.sidebar i {
+    color: #172117 !important;
+}
+
+/* Navigation items */
+.sidebar a {
+    background: transparent !important;
+}
+
+/* Active page */
+.sidebar a.active {
+    background: #C8D8BE !important;
+    color: #172117 !important;
+}
+
+/* Hover */
+.sidebar a:hover {
+    background: #D2E1C9 !important;
+    color: #172117 !important;
+}
+
+/* Logout */
+.sidebar .logout,
+.sidebar .logout a {
+    color: #172117 !important;
+}
+/* =========================================================
+   POLICE OFFICER PORTAL
+========================================================= */
+
+.police-layout {
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+
+/* LEFT SIDEBAR */
+
+.police-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    width: 320px;
+    height: 100vh;
+
+    box-sizing: border-box;
+
+    background: #dde8d5;
+
+    padding: 45px 32px;
+
+    border-right: 1px solid #c8d8be;
+
+    color: #111827;
+}
+
+
+/* LOGO */
+
+.sidebar-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar-logo img {
+    width: 165px;
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* SIDEBAR TITLE */
+
+.police-sidebar h2 {
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 0 0 18px 0;
+    font-weight: 700;
+}
+
+
+/* DESCRIPTION */
+
+.sidebar-description {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 45px;
+}
+
+
+/* SIDEBAR SECTIONS */
+
+.sidebar-section {
+    border-top: 1px solid #b9c9af;
+    padding-top: 20px;
+    margin-top: 25px;
+}
+
+.sidebar-section h4 {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    margin: 0 0 10px 0;
+}
+
+.sidebar-section p {
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+
+/* LOGOUT */
+
+.sidebar-logout {
+    position: absolute;
+
+    left: 32px;
+    bottom: 35px;
+
+    padding: 11px 22px;
+
+    background: transparent;
+
+    border: 1px solid #111827;
+
+    color: #111827;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.sidebar-logout:hover {
+    background: #c8d8be;
+}
+
+
+/* MAIN CONTENT */
+
+.police-main {
+    margin-left: 320px;
+
+    min-height: 100vh;
+
+    padding: 45px 55px;
+
+    box-sizing: border-box;
+}
+
+
+/* PAGE HEADER */
+
+.police-main .page-header {
+    margin-bottom: 30px;
+}
+
+.police-main .page-header > div > p:first-child {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+}
+
+.police-main .page-header h1 {
+    font-size: 38px;
+    margin: 0 0 8px 0;
+}
+
+.police-main .page-header p:last-child {
+    margin: 0;
+    font-size: 15px;
+}
+
+
+/* CONTENT CARDS */
+
+.police-main .content-card {
+    background: #ffffff;
+
+    border: 1px solid #d1d5db;
+
+    margin-bottom: 25px;
+
+    padding: 28px;
+}
+
+
+/* CARD HEADER */
+
+.police-main .card-header {
+    border-bottom: 1px solid #d1d5db;
+
+    padding-bottom: 18px;
+
+    margin-bottom: 20px;
+}
+
+.police-main .card-header h2 {
+    margin: 0 0 5px 0;
+    font-size: 24px;
+}
+
+.police-main .card-header p {
+    margin: 0;
+    font-size: 14px;
+}
+
+
+/* OFFICER DETAILS */
+
+.police-main .detail-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 14px;
+}
+
+.police-main .detail-card {
+    background: #ffffff;
+
+    border: 1px dotted #888;
+
+    padding: 20px;
+}
+
+.police-main .detail-card h4 {
+    margin: 0 0 8px 0;
+
+    font-size: 14px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.police-main .detail-card p {
+    margin: 0;
+
+    font-size: 16px;
+}
+
+
+/* CASES */
+
+.police-main .civilian-case {
+    border: 1px dotted #888;
+
+    background: #ffffff;
+
+    padding: 20px;
+
+    margin-bottom: 14px;
+}
+
+.police-main .civilian-case h3 {
+    margin: 0 0 8px 0;
+}
+
+.police-main .civilian-case p {
+    margin: 5px 0;
+}
+
+
+/* VIEW CASE BUTTON */
+
+.police-main .civilian-case button {
+    margin-top: 10px;
+
+    padding: 9px 18px;
+
+    background: #526b4d;
+
+    color: white;
+
+    border: none;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+.police-main .civilian-case button:hover {
+    background: #435a3f;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+    .police-sidebar {
+        position: relative;
+
+        width: 100%;
+
+        height: auto;
+    }
+
+    .sidebar-logout {
+        position: static;
+
+        margin-top: 25px;
+    }
+
+    .police-main {
+        margin-left: 0;
+
+        padding: 25px;
+    }
+
+    .police-main .detail-grid {
         grid-template-columns: 1fr;
     }
 }

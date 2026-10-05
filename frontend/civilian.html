@@ -1,77 +1,376 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>CRMS | Civilian</title>
-</head>
-<body>
 
-    <h1>Crime Record Management System</h1>
+    <link rel="stylesheet" href="css/style.css">
 
-    <p>Public Case Search</p>
+    <style>
+        .civilian-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+        }
 
-    <input
-        type="text"
-        id="searchCase"
-        placeholder="Search case..."
-    >
+        .civilian-sidebar {
+            background: #dde8d5;
+            padding: 45px 30px;
+            border-right: 1px solid #c8d3c2;
+        }
 
-    <button onclick="searchCases()">Search</button>
+        .civilian-sidebar img {
+            width: 180px;
+            height: auto;
+            margin-bottom: 35px;
+        }
 
-    <button onclick="logout()">Logout</button>
+        .civilian-sidebar h2 {
+            font-size: 26px;
+            margin-bottom: 12px;
+        }
 
-    <div id="results"></div>
+        .civilian-sidebar p {
+            line-height: 1.6;
+            color: #333;
+            font-size: 14px;
+        }
 
-    <script src="js/auth.js"></script>
-    <script>
-        async function searchCases() {
-            const response = await authFetch(
-                "http://127.0.0.1:8000/cases/?skip=0&limit=100"
-            );
+        .civilian-sidebar .portal-label {
+            margin-top: 40px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
 
-            if (!response.ok) {
-                document.getElementById("results").innerHTML =
-                    "<p>Unable to load case records.</p>";
-                return;
+        .civilian-main {
+            padding: 45px 55px;
+        }
+
+        .civilian-header {
+            margin-bottom: 30px;
+        }
+
+        .civilian-header p:first-child {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .civilian-header h1 {
+            margin: 6px 0;
+            font-size: 36px;
+        }
+
+        .civilian-card {
+            background: white;
+            border: 1px solid #d7dce2;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .civilian-card h2 {
+            margin-top: 0;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .search-row input {
+            flex: 1;
+            padding: 13px;
+            border: 1px solid #bfc5cc;
+            font-size: 15px;
+        }
+
+        .search-row button,
+        .load-cases-btn {
+            padding: 13px 22px;
+            border: none;
+            background: #526b4d;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .search-row button:hover,
+        .load-cases-btn:hover {
+            background: #40553c;
+        }
+
+        .load-cases-btn {
+            margin-top: 15px;
+        }
+
+        #searchMessage {
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .case-list {
+            margin-top: 20px;
+        }
+
+        .civilian-case {
+            border: 1px solid #d7dce2;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #fafafa;
+        }
+
+        .civilian-case h3 {
+            margin-top: 0;
+        }
+
+        .civilian-case button {
+            padding: 9px 15px;
+            border: 1px solid #526b4d;
+            background: white;
+            color: #526b4d;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .civilian-case button:hover {
+            background: #526b4d;
+            color: white;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .detail-card {
+            border: 1px solid #d7dce2;
+            padding: 15px;
+        }
+
+        .detail-card h4 {
+            margin: 0 0 7px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .detail-card p {
+            margin: 0;
+        }
+
+        .logout-button {
+            margin-top: 30px;
+            padding: 11px 20px;
+            background: white;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+
+        @media (max-width: 800px) {
+
+            .civilian-layout {
+                grid-template-columns: 1fr;
             }
 
-            const cases = await response.json();
-            const search = document
-                .getElementById("searchCase")
-                .value
-                .toLowerCase();
+            .civilian-sidebar {
+                border-right: none;
+                border-bottom: 1px solid #c8d3c2;
+            }
 
-            const filtered = cases.filter(c =>
-                (c.case_title || "").toLowerCase().includes(search)
-            );
+            .civilian-main {
+                padding: 25px;
+            }
 
-            document.getElementById("results").innerHTML =
-                filtered.map(c => `
-                    <div>
-                        <h3>${c.case_title}</h3>
-                        <p>Case ID: ${c.case_id}</p>
-                        <p>Status: ${c.status}</p>
-                        <button onclick="viewCase(${c.case_id})">
-                            View Details
-                        </button>
-                    </div>
-                    <hr>
-                `).join("");
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-row {
+                flex-direction: column;
+            }
         }
+    </style>
+</head>
 
-        function viewCase(caseId) {
-            window.location.href = `case-details.html?case_id=${caseId}`;
-        }
 
-        function logout() {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("crms_token");
-            localStorage.removeItem("crms_user");
-            window.location.href = "index.html";
-        }
+<body>
 
-        searchCases();
-    </script>
+<div class="civilian-layout">
+
+
+    <!-- LEFT SIDE -->
+
+    <aside class="civilian-sidebar">
+
+        <img
+            src="assets/crms-logo.png"
+            alt="Crime Record Management System Logo"
+        >
+
+        <h2>Crime Record Management System</h2>
+
+        <p>
+            A centralized platform for accessing crime records,
+            case information and legal proceedings.
+        </p>
+
+        <p class="portal-label">
+            Civilian Portal
+        </p>
+
+        <p>
+            Search records associated with an Aadhaar number
+            or browse the available case records.
+        </p>
+
+    </aside>
+
+
+    <!-- RIGHT SIDE -->
+
+    <main class="civilian-main">
+
+
+        <header class="civilian-header">
+
+            <p>CIVILIAN ACCESS</p>
+
+            <h1>Crime Record Search</h1>
+
+            <p>
+                Search and view publicly accessible crime records.
+            </p>
+
+        </header>
+
+
+        <!-- SEARCH -->
+
+        <section class="civilian-card">
+
+            <h2>Search by Aadhaar</h2>
+
+            <p>
+                Enter your 12-digit Aadhaar number to find
+                associated case records.
+            </p>
+
+            <div class="search-row">
+
+                <input
+                    type="text"
+                    id="aadhaarInput"
+                    maxlength="12"
+                    inputmode="numeric"
+                    placeholder="Enter 12-digit Aadhaar number"
+                >
+
+                <button
+                    type="button"
+                    onclick="searchAadhaar()">
+                    Search
+                </button>
+
+            </div>
+
+            <p id="searchMessage"></p>
+
+        </section>
+
+
+        <!-- PERSON INFORMATION -->
+
+        <section
+            id="personSection"
+            class="civilian-card"
+            style="display:none;"
+        >
+
+            <h2>Person Information</h2>
+
+            <div class="detail-grid">
+
+                <div class="detail-card">
+                    <h4>Name</h4>
+                    <p id="personName">-</p>
+                </div>
+
+                <div class="detail-card">
+                    <h4>Date of Birth</h4>
+                    <p id="personDOB">-</p>
+                </div>
+
+                <div class="detail-card">
+                    <h4>Gender</h4>
+                    <p id="personGender">-</p>
+                </div>
+
+                <div class="detail-card">
+                    <h4>City</h4>
+                    <p id="personCity">-</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ALL CASES -->
+
+        <section class="civilian-card">
+
+            <h2>Case Records</h2>
+
+            <p>
+                View the pre-existing case records available
+                in the CRMS database.
+            </p>
+
+            <button
+                type="button"
+                class="load-cases-btn"
+                onclick="loadAllCases()">
+                Load All Cases
+            </button>
+
+            <div
+                id="casesSection"
+                class="case-list"
+                style="display:none;"
+            >
+
+                <p id="caseCount"></p>
+
+                <div id="results"></div>
+
+            </div>
+
+        </section>
+
+
+        <button
+            type="button"
+            class="logout-button"
+            onclick="logout()">
+            Logout
+        </button>
+
+
+    </main>
+
+</div>
+
+
+<script src="js/auth.js"></script>
+<script src="js/civilian.js"></script>
 
 </body>
+
 </html>

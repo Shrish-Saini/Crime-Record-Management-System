@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CRMS | Police Officer</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="police-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="police-sidebar">
+
+        <div class="sidebar-logo">
+            <img src="assets/crms-logo.png" alt="CRMS Logo">
+        </div>
+
+        <h2>
+            Crime Record<br>
+            Management<br>
+            System
+        </h2>
+
+        <p class="sidebar-description">
+            A centralized platform for accessing
+            crime records, case information and
+            legal proceedings.
+        </p>
+
+        <div class="sidebar-section">
+
+            <h4>POLICE OFFICER PORTAL</h4>
+
+            <p>
+                View your officer information and
+                records associated with your assigned
+                police station.
+            </p>
+
+        </div>
+
+        <div class="sidebar-section">
+
+            <h4>ACCESS</h4>
+
+            <p>
+                Station cases<br>
+                Investigations<br>
+                Evidence<br>
+                Court records<br>
+                BNS sections
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="sidebar-logout"
+            onclick="logout()">
+            Logout
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="police-main">
+
+        <section class="page-content">
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <p>POLICE OFFICER PORTAL</p>
+
+                    <h1>Officer Dashboard</h1>
+
+                    <p>
+                        Officer information and records associated
+                        with your assigned police station.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- OFFICER INFORMATION -->
+
+            <div class="content-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>Officer Information</h2>
+
+                        <p>
+                            Your registered police personnel details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-grid">
+
+                    <div class="detail-card">
+
+                        <h4>Name</h4>
+
+                        <p id="officerName">
+                            Loading...
+                        </p>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <h4>Police ID</h4>
+
+                        <p id="officerId">
+                            Loading...
+                        </p>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <h4>Rank</h4>
+
+                        <p id="officerRank">
+                            Loading...
+                        </p>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <h4>Joining Date</h4>
+
+                        <p id="joiningDate">
+                            Loading...
+                        </p>
+
+                    </div>
+
+
+                    <div class="detail-card">
+
+                        <h4>Police Station</h4>
+
+                        <p id="stationName">
+                            Loading...
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATION CASES -->
+
+            <div class="content-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>Station Cases</h2>
+
+                        <p>
+                            Cases registered under your assigned
+                            police station.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div id="caseResults">
+                    Loading cases...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="js/auth.js"></script>
+<script src="js/police.js"></script>
+
+</body>
+
+</html>
