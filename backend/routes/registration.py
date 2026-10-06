@@ -1,12 +1,13 @@
 import os
-from datetime import date, datetime
+from datetime import date
+
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-
 from argon2 import PasswordHasher
+
 from database import get_db
 from routes.auth import create_access_token
 
@@ -76,8 +77,6 @@ def complete_phone_registration(
             detail="A verified Firebase phone account is required"
         )
 
-    # Firebase has already completed the SMS OTP verification.
-    # The backend never trusts a phone number supplied by the browser.
     existing = db.execute(
         text("""
             SELECT user_id
@@ -101,48 +100,48 @@ def complete_phone_registration(
     password_hash = pwd_hasher.hash(payload.password)
 
     try:
-        with db.begin():
-            person_result = db.execute(
-                text("""
-                    INSERT INTO persons
-                        (full_name, date_of_birth, gender, phone,
-                         address, city, state, pincode)
-                    VALUES
-                        (:full_name, :date_of_birth, :gender, :phone,
-                         :address, :city, :state, :pincode)
-                """),
-                {
-                    "full_name": payload.full_name.strip(),
-                    "date_of_birth": payload.date_of_birth,
-                    "gender": payload.gender,
-                    "phone": phone_number,
-                    "address": payload.address,
-                    "city": payload.city,
-                    "state": payload.state,
-                    "pincode": payload.pincode
-                }
-            )
+        person_result = db.execute(
+            text("""
+                INSERT INTO persons
+                    (full_name, date_of_birth, gender, phone,
+                     address, city, state, pincode)
+                VALUES
+                    (:full_name, :date_of_birth, :gender, :phone,
+                     :address, :city, :state, :pincode)
+            """),
+            {
+                "full_name": payload.full_name.strip(),
+                "date_of_birth": payload.date_of_birth,
+                "gender": payload.gender,
+                "phone": phone_number,
+                "address": payload.address,
+                "city": payload.city,
+                "state": payload.state,
+                "pincode": payload.pincode
+            }
+        )
 
-            person_id = person_result.lastrowid
+        person_id = person_result.lastrowid
 
-            user_result = db.execute(
-                text("""
-                    INSERT INTO users
-                        (username, password, role, officer_id, status,
-                         person_id, firebase_uid, phone_verified)
-                    VALUES
-                        (:username, :password, 'Civilian', NULL, 'Active',
-                         :person_id, :firebase_uid, TRUE)
-                """),
-                {
-                    "username": phone_number,
-                    "password": password_hash,
-                    "person_id": person_id,
-                    "firebase_uid": firebase_uid
-                }
-            )
+        user_result = db.execute(
+            text("""
+                INSERT INTO users
+                    (username, password, role, officer_id, status,
+                     person_id, firebase_uid, phone_verified)
+                VALUES
+                    (:username, :password, 'Civilian', NULL, 'Active',
+                     :person_id, :firebase_uid, TRUE)
+            """),
+            {
+                "username": phone_number,
+                "password": password_hash,
+                "person_id": person_id,
+                "firebase_uid": firebase_uid
+            }
+        )
 
-            user_id = user_result.lastrowid
+        user_id = user_result.lastrowid
+        db.commit()
 
         user = {
             "user_id": user_id,
@@ -173,3 +172,6 @@ def complete_phone_registration(
             status_code=409,
             detail="A CRMS account or person record already exists for this phone number"
         ) from exc
+    except Exception:
+        db.rollback()
+        raise
