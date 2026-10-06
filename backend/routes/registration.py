@@ -1,5 +1,6 @@
 import os
 from datetime import date
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -31,11 +32,25 @@ def get_firebase_auth():
 
     if not firebase_admin._apps:
         try:
-            firebase_admin.initialize_app()
+            credential_path = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+            if credential_path:
+                credential_path = Path(credential_path)
+            else:
+                credential_path = Path(__file__).resolve().parents[1] / "firebase-service-account.json"
+
+            if not credential_path.exists():
+                raise FileNotFoundError(
+                    f"Firebase service-account file not found: {credential_path}"
+                )
+
+            firebase_credential = firebase_admin.credentials.Certificate(
+                str(credential_path)
+            )
+            firebase_admin.initialize_app(firebase_credential)
         except Exception as exc:
             raise HTTPException(
                 status_code=503,
-                detail="Firebase Admin credentials are not configured"
+                detail="Firebase Admin credentials are not configured correctly"
             ) from exc
 
     return firebase_auth
