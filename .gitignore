@@ -1,0 +1,11 @@
+# Firebase Admin SDK secret
+backend/firebase-service-account.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment files
+.env
