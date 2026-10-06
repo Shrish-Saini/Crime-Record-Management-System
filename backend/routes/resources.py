@@ -5,8 +5,6 @@ live 24-table MySQL schema without creating, migrating, or altering any table.
 """
 from unittest import skip
 
-from numpy import record
-
 from database import engine, get_db
 from routes.auth import get_current_user, require_case_access
 from datetime import date, datetime, time
