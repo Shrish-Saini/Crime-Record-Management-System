@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from routes.person_search import router as person_search_router
 from routes.auth import router as auth_router
+from routes.registration import router as registration_router
 from database import engine
 from routes.cases import router as cases_router
 from routes.resources import case_criminals_router, router as resources_router
@@ -27,6 +28,7 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type"],
 )
 app.include_router(auth_router)
+app.include_router(registration_router)
 app.include_router(cases_router)
 app.include_router(resources_router)
 app.include_router(case_criminals_router)
