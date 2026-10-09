@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRMS | Civilian Registration</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-section" style="width:100%;">
+            <div class="login-card">
+                <div class="login-heading">
+                    <p class="login-eyebrow">CIVILIAN PORTAL</p>
+                    <h2>Create your profile</h2>
+                    <p>Verify your mobile number with OTP, then complete your CRMS profile.</p>
+                </div>
+
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="phone">Mobile Number</label>
+                        <input id="phone" type="tel" placeholder="+91 9876543210" required>
+                    </div>
+
+                    <div id="recaptcha-container"></div>
+
+                    <button type="button" class="login-button" id="sendOtpButton">
+                        Send OTP
+                    </button>
+
+                    <div class="form-group">
+                        <label for="otp">OTP</label>
+                        <input id="otp" type="text" maxlength="6" inputmode="numeric"
+                               placeholder="Enter 6-digit OTP" disabled>
+                    </div>
+
+                    <button type="button" id="verifyButton" disabled>
+                        Verify Phone
+                    </button>
+
+                    <div id="profileSection" style="display:none; margin-top:20px;">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input id="fullName" type="text" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dateOfBirth">Date of Birth</label>
+                            <input id="dateOfBirth" type="date">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <input id="gender" type="text" placeholder="Optional">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input id="address" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input id="city" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input id="state" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input id="pincode" type="text" maxlength="10">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">CRMS Password</label>
+                            <input id="password" type="password" minlength="8" required>
+                        </div>
+
+                        <button type="submit" class="login-button">
+                            Create Civilian Account
+                        </button>
+                    </div>
+
+                    <p id="statusMessage" class="status"></p>
+                </form>
+
+                <p class="footer-text">
+                    Already registered? <a href="index.html">Back to login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script>
+        firebase.initializeApp(FIREBASE_CONFIG);
+    </script>
+    <script src="js/register.js"></script>
+</body>
+</html>
