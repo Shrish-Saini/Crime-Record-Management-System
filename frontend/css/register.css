@@ -1,0 +1,211 @@
+
+/* Civilian registration page */
+
+.register-page {
+    background: #DDE8D5;
+    padding: 32px;
+}
+
+.register-layout {
+    max-width: 1250px;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 510px);
+    gap: 65px;
+}
+
+.register-section {
+    min-width: 0;
+}
+
+.register-card {
+    padding: 34px;
+}
+
+.register-card .login-heading {
+    margin-bottom: 24px;
+}
+
+.register-card .login-heading h2 {
+    font-size: 27px;
+}
+
+.register-card .form-group {
+    margin-bottom: 15px;
+}
+
+.register-card .form-group label {
+    color: #172117;
+}
+
+.register-card input,
+.register-card select {
+    width: 100%;
+    height: 43px;
+    padding: 0 11px;
+    border: 1px solid #777777;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #111111;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+}
+
+.register-card input:focus,
+.register-card select:focus {
+    outline: 2px solid #526B4D;
+    outline-offset: 1px;
+    border-color: #526B4D;
+}
+
+.register-card input:disabled,
+.register-card select:disabled {
+    background: #f2f3f0;
+    color: #555555;
+}
+
+.register-card input::placeholder {
+    color: #777777;
+}
+
+.register-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+}
+
+.register-fields .form-group {
+    min-width: 0;
+}
+
+.register-otp-section {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #d4dcd0;
+}
+
+.register-otp-section #otp {
+    text-align: left;
+    letter-spacing: 3px;
+}
+
+.register-otp-section #otpTimer {
+    margin: 0 0 12px;
+    text-align: left;
+    font-size: 12px;
+    color: #465342;
+}
+
+.register-card .secondary-button {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 9px;
+    border: 1px solid #526B4D;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #435A3F;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.register-card .secondary-button:hover {
+    background: #eef2ea;
+}
+
+.register-card button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.verified-message {
+    margin: 0 0 18px;
+    padding: 10px;
+    border-left: 3px solid #526B4D;
+    background: #f1f4ed;
+    color: #30452d;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.register-card .status {
+    margin: 14px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.register-card .status.error {
+    color: #a12622;
+}
+
+.register-footer {
+    margin: 22px 0 0;
+    padding-top: 17px;
+    border-top: 1px solid #e0e4dc;
+    text-align: center;
+    font-size: 12px;
+    color: #303830;
+}
+
+.register-footer a {
+    color: #435A3F;
+    font-weight: 600;
+}
+
+.register-footer a:hover {
+    color: #263d23;
+}
+
+.register-section > .footer-text {
+    margin-top: 18px;
+}
+
+@media (max-width: 1000px) {
+    .register-page {
+        padding: 28px 22px;
+    }
+
+    .register-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        max-width: 650px;
+    }
+
+    .register-layout .login-info {
+        text-align: left;
+    }
+
+    .register-layout .login-logo {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .register-layout .login-info h1 {
+        font-size: 40px;
+    }
+
+    .register-layout .login-description {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .register-layout .security-note {
+        text-align: left;
+    }
+}
+
+@media (max-width: 520px) {
+    .register-page {
+        padding: 20px 14px;
+    }
+
+    .register-card {
+        padding: 25px 20px;
+    }
+
+    .register-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .register-layout .login-info h1 {
+        font-size: 34px;
+    }
+}

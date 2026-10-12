@@ -37,7 +37,7 @@ async function readResponse(response) {
 }
 
 function setProfileEnabled(enabled) {
-    profileSection.querySelectorAll("input, button").forEach(element => {
+    profileSection.querySelectorAll("input, select, button").forEach(element => {
         element.disabled = !enabled;
     });
 }
