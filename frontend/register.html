@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,78 +14,93 @@
                 <div class="login-heading">
                     <p class="login-eyebrow">CIVILIAN PORTAL</p>
                     <h2>Create your profile</h2>
-                    <p>Verify your mobile number with OTP, then complete your CRMS profile.</p>
+                    <p>Verify your email address, then complete your CRMS profile.</p>
                 </div>
 
                 <form id="registrationForm">
-                    <div class="form-group">
-                        <label for="phone">Mobile Number</label>
-                        <input id="phone" type="tel" placeholder="+91 9876543210" required>
+                    <div id="emailSection">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input id="email" type="email" maxlength="254"
+                                   placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+
+                        <button type="button" class="login-button" id="sendOtpButton">
+                            Send Email OTP
+                        </button>
+
+                        <div id="otpSection" style="display:none; margin-top:20px;">
+                            <div class="form-group">
+                                <label for="otp">Six-digit OTP</label>
+                                <input id="otp" type="text" maxlength="6"
+                                       inputmode="numeric" autocomplete="one-time-code"
+                                       placeholder="Enter email OTP">
+                            </div>
+
+                            <p id="otpTimer">Code expires in 5:00</p>
+
+                            <button type="button" class="login-button" id="verifyButton">
+                                Verify Email
+                            </button>
+
+                            <button type="button" id="resendOtpButton">
+                                Resend OTP
+                            </button>
+                        </div>
                     </div>
-
-                    <div id="recaptcha-container"></div>
-
-                    <button type="button" class="login-button" id="sendOtpButton">
-                        Send OTP
-                    </button>
-
-                    <div class="form-group">
-                        <label for="otp">OTP</label>
-                        <input id="otp" type="text" maxlength="6" inputmode="numeric"
-                               placeholder="Enter 6-digit OTP" disabled>
-                    </div>
-
-                    <button type="button" id="verifyButton" disabled>
-                        Verify Phone
-                    </button>
 
                     <div id="profileSection" style="display:none; margin-top:20px;">
+                        <p id="verifiedEmailMessage"></p>
+
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
-                            <input id="fullName" type="text" required>
+                            <input id="fullName" type="text" maxlength="100" required disabled>
                         </div>
 
                         <div class="form-group">
                             <label for="dateOfBirth">Date of Birth</label>
-                            <input id="dateOfBirth" type="date">
+                            <input id="dateOfBirth" type="date" disabled>
                         </div>
 
                         <div class="form-group">
                             <label for="gender">Gender</label>
-                            <input id="gender" type="text" placeholder="Optional">
+                            <input id="gender" type="text" maxlength="20"
+                                   placeholder="Optional" disabled>
                         </div>
 
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <input id="address" type="text">
+                            <input id="address" type="text" maxlength="255" disabled>
                         </div>
 
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input id="city" type="text">
+                            <input id="city" type="text" maxlength="50" disabled>
                         </div>
 
                         <div class="form-group">
                             <label for="state">State</label>
-                            <input id="state" type="text">
+                            <input id="state" type="text" maxlength="50" disabled>
                         </div>
 
                         <div class="form-group">
                             <label for="pincode">Pincode</label>
-                            <input id="pincode" type="text" maxlength="10">
+                            <input id="pincode" type="text" maxlength="10" disabled>
                         </div>
 
                         <div class="form-group">
                             <label for="password">CRMS Password</label>
-                            <input id="password" type="password" minlength="8" required>
+                            <input id="password" type="password" minlength="8"
+                                   maxlength="128" autocomplete="new-password" required disabled>
                         </div>
 
-                        <button type="submit" class="login-button">
+                        <button type="submit" class="login-button" id="createAccountButton">
                             Create Civilian Account
                         </button>
                     </div>
 
-                    <p id="statusMessage" class="status"></p>
+                    <p id="statusMessage" class="status" role="status"
+                       aria-live="polite"></p>
                 </form>
 
                 <p class="footer-text">
@@ -94,12 +110,6 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script>
-        firebase.initializeApp(FIREBASE_CONFIG);
-    </script>
-    <script src="js/register.js"></script>
+    <script src="js/register.js?v=3"></script>
 </body>
 </html>
