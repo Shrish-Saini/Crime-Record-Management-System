@@ -1413,3 +1413,411 @@ td {
         grid-template-columns: 1fr;
     }
 }
+
+.content-card {
+    background: #ffffff;
+    border: 1px solid #d5d9df;
+    padding: 30px;
+    margin: 24px 0;
+    border-radius: 4px;
+}
+
+.content-card h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.content-card > p {
+    margin-bottom: 24px;
+    color: #444444;
+}
+
+#assignedCaseResults,
+#caseResults {
+    display: grid;
+    gap: 16px;
+}
+
+/* Superintendent portal styles.
+   Shared CRMS styling remains in css/style.css. */
+
+.superintendent-layout {
+    min-height: 100vh;
+}
+
+.super-nav {
+    display: grid;
+    gap: 7px;
+    margin: 22px 0;
+}
+
+.super-nav a {
+    padding: 11px 13px;
+    border-radius: 9px;
+    text-decoration: none;
+    color: inherit;
+    font-size: 14px;
+}
+
+.super-nav a:hover {
+    background: rgba(100, 83, 235, 0.14);
+}
+
+.super-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.super-profile {
+    display: grid;
+    gap: 5px;
+    padding: 15px 18px;
+    border: 1px solid #e7e5f3;
+    border-radius: 12px;
+    background: #fff;
+    min-width: 180px;
+}
+
+.super-profile small {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: #817c92;
+}
+
+.super-profile strong {
+    font-size: 17px;
+    color: #29263d;
+}
+
+.super-profile span {
+    font-size: 13px;
+    color: #6453eb;
+}
+
+.super-notice {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 9px;
+    background: #fff2f2;
+    color: #9b2c2c;
+    border: 1px solid #efcaca;
+}
+
+.super-notice.success {
+    background: #effaf1;
+    color: #22683a;
+    border-color: #c7e9d0;
+}
+
+.super-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.super-stats article {
+    display: grid;
+    gap: 8px;
+    padding: 18px;
+    border: 1px solid #e9e7f0;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.super-stats span {
+    font-size: 13px;
+    color: #777286;
+}
+
+.super-stats strong {
+    font-size: 30px;
+    color: #29263d;
+}
+
+.super-filters {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.super-filters input,
+.super-filters select,
+.super-search,
+.transfer-form input,
+.transfer-form select {
+    padding: 11px 12px;
+    border: 1px solid #dedce8;
+    border-radius: 8px;
+    background: #fff;
+    font: inherit;
+    min-width: 0;
+}
+
+.super-filters input {
+    flex: 1;
+}
+
+.super-filters select {
+    min-width: 150px;
+}
+
+.super-table-wrap {
+    overflow-x: auto;
+    margin-top: 14px;
+}
+
+.super-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 760px;
+}
+
+.super-table th {
+    text-align: left;
+    background: #f7f6fb;
+    color: #666176;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 13px;
+}
+
+.super-table td {
+    padding: 13px;
+    border-bottom: 1px solid #efedf4;
+    font-size: 13px;
+    color: #39364a;
+}
+
+.super-table tbody tr:hover {
+    background: #fcfbff;
+}
+
+.super-table button,
+#recordTransferBtn {
+    cursor: pointer;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 7px;
+    background: #6453eb;
+    color: white;
+    font-size: 12px;
+    margin: 2px;
+}
+
+.super-table .remove-assignment {
+    background: #fff0f0;
+    color: #a12d37;
+    border: 1px solid #f0c9cd;
+}
+
+.super-secondary {
+    padding: 9px 12px !important;
+    background: #f0edff !important;
+    color: #5140c5 !important;
+    border-radius: 8px !important;
+}
+
+.super-search {
+    width: 100%;
+    margin: 12px 0;
+}
+
+.transfer-form {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.transfer-form label {
+    display: grid;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #696579;
+}
+
+.legal-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.legal-links a {
+    padding: 14px 16px;
+    border: 1px solid #e8e6f0;
+    border-radius: 9px;
+    color: #342f50;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.legal-links a:hover {
+    background: #faf9ff;
+    border-color: #c7c0ff;
+}
+
+@media (max-width: 1000px) {
+    .super-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .transfer-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .super-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .super-stats,
+    .transfer-form {
+        grid-template-columns: 1fr;
+    }
+
+    .super-filters {
+        flex-direction: column;
+    }
+
+    .legal-links {
+        display: grid;
+    }
+}
+
+/* Superintendent dashboard: plain rectangular View button */
+.superintendent-layout .view-btn,
+.superintendent-layout button.view-btn {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #222222 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 8px 14px;
+    font-weight: 600;
+}
+
+.superintendent-layout .view-btn:hover,
+.superintendent-layout button.view-btn:hover {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+}
+
+.view-btn {
+    background: #ffffff !important;
+    color: #111111 !important;
+    border: 1px solid #222222 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 8px 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.view-btn:hover {
+    background: #f2f2f2 !important;
+}
+
+/* Make superintendent dashboard cards sharp rectangles */
+.stat-card,
+.overview-card,
+.signed-in-card,
+.user-info-card,
+.profile-summary,
+.superintendent-main .stat-card,
+.superintendent-main .overview-card {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Target the actual dashboard card elements */
+body:has(.superintendent-main) .stat-card,
+body:has(.superintendent-main) .signed-in-card,
+body:has(.superintendent-main) .overview-card {
+    border-radius: 0 !important;
+}
+
+/* If the cards use different class names, target by their content layout */
+.detail-card {
+    border-radius: 0 !important;
+}
+
+/* ===== SUPERINTENDENT: FORCE RECTANGULAR DESIGN ===== */
+
+/* Every card and information box */
+.stat-card,
+.stat-card *,
+.signed-in-card,
+.user-info-card,
+.profile-summary,
+.overview-card,
+.content-card,
+.detail-card,
+.page-header > *,
+section,
+article {
+    border-radius: 0 !important;
+}
+
+/* Statistic cards */
+.stat-card {
+    border: 1px solid #dedede !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+}
+
+/* Signed-in Manik Mishra box */
+.page-header > div:last-child {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Refresh button and other dashboard buttons */
+button,
+button:hover,
+button:focus,
+button:active,
+.view-btn {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Refresh button: white, black text, rectangular */
+#refreshBtn,
+#refreshOverview,
+button[onclick*="refresh"] {
+    background: #ffffff !important;
+    color: #111111 !important;
+    border: 1px solid #222222 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+#refreshBtn:hover,
+#refreshOverview:hover,
+button[onclick*="refresh"]:hover {
+    background: #f0f0f0 !important;
+    color: #111111 !important;
+}
+
+/* View button */
+.view-btn {
+    background: #ffffff !important;
+    color: #111111 !important;
+    border: 1px solid #222222 !important;
+}
+
+/* Remove rounded corners from all common card types */
+[class*="card"],
+[class*="panel"],
+[class*="summary"],
+[class*="profile"] {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+

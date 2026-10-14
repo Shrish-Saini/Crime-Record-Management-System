@@ -96,31 +96,20 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 ========================================================= */
 
 function redirectUser(role) {
+    const normalizedRole = String(role || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_");
 
-    if (role === "civilian") {
-
-        window.location.href =
-            "civilian.html";
-
-    }
-
-    else if (role === "police_officer") {
-
-        window.location.href =
-            "police.html";
-
-    }
-
-    else if (role === "superintendent") {
-
-        window.location.href =
-            "cases.html";
-
-    }
-
-    else {
-
-        window.location.href =
-            "cases.html";
+    if (normalizedRole === "civilian") {
+        window.location.href = "civilian.html";
+    } else if (normalizedRole === "police_officer") {
+        window.location.href = "police.html";
+    } else if (normalizedRole === "superintendent") {
+        window.location.href = "superintendent.html";
+    } else if (normalizedRole === "admin") {
+        window.location.href = "cases.html";
+    } else {
+        alert("Unrecognized user role. Please contact the administrator.");
     }
 }

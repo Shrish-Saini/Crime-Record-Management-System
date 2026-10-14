@@ -22,6 +22,11 @@ async function loadOfficer() {
         }
 
         const officer = await response.json();
+        document.getElementById("previousStation").textContent =
+            officer.transferred_from || "No transfer recorded";
+
+        document.getElementById("lastTransferDate").textContent =
+            officer.transfer_date || "Not available";
 
         document.getElementById("officerName").textContent =
             officer.name || "-";
@@ -204,10 +209,47 @@ function logout() {
 // INITIALIZE
 // ----------------------------------------
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-        loadOfficer();
-        loadCases();
+document.addEventListener("DOMContentLoaded", () => {
+    loadOfficer();
+    loadCases();
+    loadAssignedCases();
+});
+
+async function loadAssignedCases() {
+    const container = document.getElementById("assignedCaseResults");
+
+    try {
+        const response = await authFetch(
+            `${API_BASE_URL}/cases/?skip=0&limit=100&assigned_to_me=true`
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to load assigned cases.");
+        }
+
+        const cases = await response.json();
+
+        if (cases.length === 0) {
+            container.innerHTML = "<p>No cases assigned to you as IO.</p>";
+            return;
+        }
+
+        container.innerHTML = cases.map(caseItem => `
+            <div class="civilian-case">
+                <h3>${caseItem.case_title || "Untitled Case"}</h3>
+                <p><strong>Case ID:</strong> ${caseItem.case_id}</p>
+                <p><strong>Status:</strong> ${caseItem.status || "N/A"}</p>
+                <p><strong>Start Date:</strong> ${caseItem.start_date || "N/A"}</p>
+                <p><strong>Outcome:</strong> ${caseItem.outcome || "Pending"}</p>
+                <button type="button"
+                    onclick="viewCase(${caseItem.case_id})">
+                    View Case
+                </button>
+            </div>
+        `).join("");
+
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = "<p>Unable to load assigned cases.</p>";
     }
-);
+}
