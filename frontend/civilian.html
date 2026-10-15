@@ -84,194 +84,61 @@
         }
 
         
-        /* Aadhaar search section with illustration */
-        .aadhaar-search-layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
-            align-items: center;
-            gap: 35px;
-            margin-top: 24px;
-        }
+        
+/* Aadhaar search section with illustration */
+.aadhaar-search-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
+    align-items: center;
+    gap: 35px;
+    margin-top: 24px;
+}
 
-        .aadhaar-search-content {
-            min-width: 0;
-        }
+.aadhaar-search-content {
+    min-width: 0;
+}
 
-        .aadhaar-search-content .search-row {
-            margin-top: 0;
-        }
+.aadhaar-search-content .search-row {
+    margin-top: 0;
+}
 
-        .aadhaar-search-content .search-row input {
-            min-width: 0;
-            width: 100%;
-            flex: 1;
-        }
+.aadhaar-search-content .search-row input {
+    min-width: 0;
+    width: 100%;
+    flex: 1;
+}
 
-        .aadhaar-illustration {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
+/* Display the actual uploaded illustration */
+.aadhaar-illustration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
 
-        .aadhaar-card-visual {
-            max-width: 280px;
-            padding: 20px;
-            border: 1px solid #d5ded0;
-            border-radius: 8px;
-            background: #f5f5ed;
-            <div class="aadhaar-illustration">
-                <img
-                    src="assets/aadhaar-illustration.png"
-                    alt="Aadhaar card illustration"
-                >
-            </div>
-        }
+.aadhaar-illustration img {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    object-fit: contain;
+}
 
-        .aadhaar-card-top {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid #d5ded0;
-        }
+/* Responsive layout for smaller screens */
+@media (max-width: 800px) {
+    .aadhaar-search-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
 
-        .aadhaar-emblem {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #526b4d;
-            color: white;
-            font-size: 17px;
-            font-weight: 700;
-        }
+    .aadhaar-illustration {
+        padding: 5px;
+    }
 
-        .aadhaar-card-heading {
-            color: #344b30;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .aadhaar-card-subheading {
-            margin-top: 3px;
-            color: #6b7667;
-            font-size: 10px;
-        }
-
-        .aadhaar-tricolor {
-            display: flex;
-            height: 4px;
-            margin: 16px 0;
-            overflow: hidden;
-            border-radius: 4px;
-        }
-
-        .aadhaar-tricolor span {
-            flex: 1;
-        }
-
-        .aadhaar-tricolor span:nth-child(1) {
-            background: #e99a50;
-        }
-
-        .aadhaar-tricolor span:nth-child(2) {
-            background: #f5f5ed;
-        }
-
-        .aadhaar-tricolor span:nth-child(3) {
-            background: #719a65;
-        }
-
-        .aadhaar-profile-row {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin: 12px 0 18px;
-        }
-
-        .aadhaar-avatar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 62px;
-            height: 72px;
-            flex-shrink: 0;
-            border-radius: 8px;
-            background: #dce6d5;
-            color: #526b4d;
-        }
-
-        .aadhaar-avatar svg {
-            width: 38px;
-            height: 38px;
-        }
-
-        .aadhaar-placeholder-lines {
-            flex: 1;
-        }
-
-        .aadhaar-placeholder-lines span {
-            display: block;
-            height: 7px;
-            margin: 9px 0;
-            border-radius: 5px;
-            background: #d5ded0;
-        }
-
-        .aadhaar-placeholder-lines span:nth-child(1) {
-            width: 85%;
-        }
-
-        .aadhaar-placeholder-lines span:nth-child(2) {
-            width: 65%;
-        }
-
-        .aadhaar-placeholder-lines span:nth-child(3) {
-            width: 75%;
-        }
-
-        .aadhaar-number-label {
-            margin-bottom: 6px;
-            color: #697564;
-            font-size: 10px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .aadhaar-number {
-            color: #344b30;
-            font-size: 19px;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
-        .aadhaar-caption {
-            margin-top: 17px;
-            color: #657160;
-            font-size: 12px;
-            line-height: 1.6;
-            text-align: center;
-        }
-
-        @media (max-width: 800px) {
-            .aadhaar-search-layout {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .aadhaar-illustration {
-                padding: 5px;
-            }
-
-            .aadhaar-card-visual {
-                max-width: 340px;
-                transform: none;
-            }
-        }
+    .aadhaar-illustration img {
+        max-width: 260px;
+    }
+}
 
 
         .search-row input {
@@ -482,72 +349,11 @@
                 </div>
 
                 <!-- Aadhaar illustration on the right -->
-                <div
-                    class="aadhaar-illustration"
-                    aria-hidden="true">
-
-                    <div class="aadhaar-card-visual">
-
-                        <div class="aadhaar-card-top">
-
-                            <div class="aadhaar-emblem">ID</div>
-
-                            <div>
-                                <div class="aadhaar-card-heading">
-                                    IDENTITY CARD
-                                </div>
-
-                                <div class="aadhaar-card-subheading">
-                                    Illustrative design only
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="aadhaar-tricolor">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-
-                        <div class="aadhaar-profile-row">
-
-                            <div class="aadhaar-avatar">
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.5"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round">
-
-                                    <circle cx="12" cy="8" r="4"></circle>
-
-                                    <path
-                                        d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7">
-                                    </path>
-
-                                </svg>
-                            </div>
-
-                            <div class="aadhaar-placeholder-lines">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-
-                        </div>
-
-                        <div class="aadhaar-number-label">
-                            Masked identification number
-                        </div>
-
-                        <div class="aadhaar-number">
-                            XXXX XXXX XXXX
-                        </div>
-
-                    </div>
-
+                <div class="aadhaar-illustration">
+                    <img
+                        src="assets/aadhaar-illustration.png"
+                        alt="Aadhaar card illustration"
+                    >
                 </div>
 
             </div>
