@@ -88,58 +88,71 @@
 /* Aadhaar search section with illustration */
 .aadhaar-search-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.55fr);
     align-items: center;
-    gap: 35px;
-    margin-top: 24px;
+    gap: 28px;
+    margin-top: 22px;
 }
 
 .aadhaar-search-content {
     min-width: 0;
 }
 
+.aadhaar-search-content h2 {
+    margin: 0 0 10px;
+    font-size: 26px;
+}
+
+.aadhaar-search-content > p {
+    margin: 0 0 22px;
+    color: #505a50;
+    line-height: 1.55;
+}
+
 .aadhaar-search-content .search-row {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
     margin-top: 0;
+    max-width: 650px;
 }
 
 .aadhaar-search-content .search-row input {
     min-width: 0;
     width: 100%;
     flex: 1;
+    box-sizing: border-box;
 }
 
-/* Display the actual uploaded illustration */
 .aadhaar-illustration {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 4px;
 }
 
 .aadhaar-illustration img {
     display: block;
     width: 100%;
-    max-width: 300px;
+    max-width: 230px;
     height: auto;
     object-fit: contain;
 }
 
-/* Responsive layout for smaller screens */
 @media (max-width: 800px) {
     .aadhaar-search-layout {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 16px;
     }
 
     .aadhaar-illustration {
-        padding: 5px;
+        padding: 0;
     }
 
     .aadhaar-illustration img {
-        max-width: 260px;
+        max-width: 190px;
     }
 }
-
 
         .search-row input {
             flex: 1;
@@ -314,20 +327,18 @@
 
         <section class="civilian-card">
 
-            <h2>Search by Aadhaar</h2>
-
-            <p>
-                Enter your 12-digit Aadhaar number to find
-                associated case records.
-            </p>
-
             <div class="aadhaar-search-layout">
 
-                <!-- Search bar on the left -->
+                <!-- Search content on the left -->
                 <div class="aadhaar-search-content">
+                    <h2>Search by Aadhaar</h2>
+
+                    <p>
+                        Enter your 12-digit Aadhaar number to find
+                        associated case records.
+                    </p>
 
                     <div class="search-row">
-
                         <input
                             type="text"
                             id="aadhaarInput"
@@ -341,11 +352,9 @@
                             onclick="searchAadhaar()">
                             Search
                         </button>
-
                     </div>
 
                     <p id="searchMessage"></p>
-
                 </div>
 
                 <!-- Aadhaar illustration on the right -->
