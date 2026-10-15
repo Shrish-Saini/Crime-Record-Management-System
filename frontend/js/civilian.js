@@ -128,72 +128,55 @@ function displayCases(cases) {
         return;
     }
 
-results.innerHTML = cases.map(caseItem => {
+results.innerHTML = `
+    <div class="case-table-wrapper">
+        <table class="case-table">
+            <thead>
+                <tr>
+                    <th>Case ID</th>
+                    <th>Case Title</th>
+                    <th>Involvement</th>
+                    <th>Start Date</th>
+                    <th>Status</th>
+                    <th>Legal Outcome</th>
+                    <th>Charges</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cases.map(caseItem => {
+                    const chargesHTML =
+                        caseItem.charges && caseItem.charges.length > 0
+                            ? caseItem.charges.map(charge => `
+                                <div class="case-charge">
+                                    <strong>${charge.section_code || "BNS Section"}</strong>
+                                    <span>${charge.section_title || ""}</span>
+                                </div>
+                            `).join("")
+                            : '<span class="case-no-charges">No charges recorded.</span>';
 
-    const chargesHTML =
-        caseItem.charges && caseItem.charges.length > 0
-            ? caseItem.charges.map(charge => `
-                <li>
-                    <strong>
-                        ${charge.section_code || "BNS Section"}
-                    </strong>
-                    ${charge.section_title || ""}
-                </li>
-            `).join("")
-            : "<li>No charges recorded.</li>";
-
-
-    return `
-        <div class="civilian-case">
-
-            <h3>
-                ${caseItem.case_title || "Untitled Case"}
-            </h3>
-
-            <p>
-                <strong>Case ID:</strong>
-                ${caseItem.case_id}
-            </p>
-
-            <p>
-                <strong>Involvement:</strong>
-                ${caseItem.involvement || "N/A"}
-            </p>
-
-            <p>
-                <strong>Start Date:</strong>
-                ${caseItem.start_date || "N/A"}
-            </p>
-
-            <p>
-                <strong>Case Status:</strong>
-                ${caseItem.status || "N/A"}
-            </p>
-
-            <p>
-                <strong>Legal Outcome:</strong>
-                ${caseItem.outcome || "Pending"}
-            </p>
-
-            <div>
-                <strong>Charges:</strong>
-
-                <ul>
-                    ${chargesHTML}
-                </ul>
-            </div>
-
-            <button
-                type="button"
-                onclick="viewCase(${caseItem.case_id})">
-                View Case
-            </button>
-
-        </div>
-    `;
-
-}).join("");
-
+                    return `
+                        <tr>
+                            <td>${caseItem.case_id ?? "-"}</td>
+                            <td class="case-title-cell">${caseItem.case_title || "Untitled Case"}</td>
+                            <td>${caseItem.involvement || "N/A"}</td>
+                            <td>${caseItem.start_date || "N/A"}</td>
+                            <td><span class="case-status">${caseItem.status || "N/A"}</span></td>
+                            <td>${caseItem.outcome || "Pending"}</td>
+                            <td class="case-charges-cell">${chargesHTML}</td>
+                            <td>
+                                <button type="button" class="case-view-button"
+                                    onclick="viewCase(${Number(caseItem.case_id)})">
+                                    View Case
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join("")}
+            </tbody>
+        </table>
+    </div>
+`;
 }
 
 async function loadAllCases() {
