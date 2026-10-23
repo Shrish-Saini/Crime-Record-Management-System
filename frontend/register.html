@@ -1,105 +1,233 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRMS | Civilian Registration</title>
+
     <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/register.css">
 </head>
 <body>
-    <div class="login-page">
-        <div class="login-section" style="width:100%;">
-            <div class="login-card">
-                <div class="login-heading">
-                    <p class="login-eyebrow">CIVILIAN PORTAL</p>
-                    <h2>Create your profile</h2>
-                    <p>Verify your mobile number with OTP, then complete your CRMS profile.</p>
+    <div class="login-page register-page">
+        <div class="login-layout register-layout">
+
+            <!-- LEFT PANEL: SAME BRANDING AS LOGIN -->
+            <div class="login-info">
+                <img src="assets/crms-logo.png" alt="CRMS Logo"
+                     class="login-logo">
+
+                <p class="system-label">
+                    CRIME RECORD MANAGEMENT SYSTEM
+                </p>
+
+                <h1>Crime records.<br>Managed securely.</h1>
+
+                <p class="login-description">
+                    A centralized digital platform for managing criminal
+                    cases, investigations, evidence, FIRs and court proceedings.
+                </p>
+
+                <div class="system-features">
+                    <div class="feature-item">
+                        <span>01</span>
+                        <div>
+                            <strong>Case Management</strong>
+                            <p>Register and manage criminal cases and FIR records.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <span>02</span>
+                        <div>
+                            <strong>Investigations</strong>
+                            <p>Track evidence, investigations and case progress.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <span>03</span>
+                        <div>
+                            <strong>Justice Records</strong>
+                            <p>Maintain court proceedings and legal records.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <span>04</span>
+                        <div>
+                            <strong>Secure Access</strong>
+                            <p>Access is managed according to user roles.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <form id="registrationForm">
-                    <div class="form-group">
-                        <label for="phone">Mobile Number</label>
-                        <input id="phone" type="tel" placeholder="+91 9876543210" required>
+                <div class="system-overview">
+                    <p class="overview-label">SYSTEM CAPABILITIES</p>
+                    <div class="overview-items">
+                        <span>Case Records</span>
+                        <span>FIR Management</span>
+                        <span>Evidence Tracking</span>
+                        <span>Investigations</span>
+                        <span>Court Records</span>
+                        <span>BNS Sections</span>
+                    </div>
+                </div>
+
+                <p class="security-note">
+                    Secure access · Role-based records · Centralized database
+                </p>
+            </div>
+
+            <!-- RIGHT PANEL: REGISTRATION -->
+            <div class="login-section register-section">
+                <div class="login-card register-card">
+
+                    <div class="login-heading">
+                        <p class="login-eyebrow">CIVILIAN PORTAL</p>
+                        <h2>Create an account</h2>
+                        <p>Register to access the CRMS civilian portal.</p>
                     </div>
 
-                    <div id="recaptcha-container"></div>
+                    <form id="registrationForm">
+                        <div id="emailSection">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input id="email" type="email"
+                                       maxlength="254"
+                                       placeholder="Enter your email address"
+                                       autocomplete="email" required>
+                            </div>
 
-                    <button type="button" class="login-button" id="sendOtpButton">
-                        Send OTP
-                    </button>
+                            <button type="button" class="login-button"
+                                    id="sendOtpButton">
+                                Send Email OTP
+                            </button>
 
-                    <div class="form-group">
-                        <label for="otp">OTP</label>
-                        <input id="otp" type="text" maxlength="6" inputmode="numeric"
-                               placeholder="Enter 6-digit OTP" disabled>
-                    </div>
+                            <div id="otpSection"
+                                 class="register-otp-section"
+                                 style="display:none">
+                                <div class="form-group">
+                                    <label for="otp">Email Verification Code</label>
+                                    <input id="otp" type="text" maxlength="6"
+                                           inputmode="numeric"
+                                           autocomplete="one-time-code"
+                                           placeholder="Enter 6-digit OTP">
+                                </div>
 
-                    <button type="button" id="verifyButton" disabled>
-                        Verify Phone
-                    </button>
+                                <p id="otpTimer">Code expires in 5:00</p>
 
-                    <div id="profileSection" style="display:none; margin-top:20px;">
-                        <div class="form-group">
-                            <label for="fullName">Full Name</label>
-                            <input id="fullName" type="text" required>
+                                <button type="button" class="login-button"
+                                        id="verifyButton">
+                                    Verify Email
+                                </button>
+
+                                <button type="button" class="secondary-button"
+                                        id="resendOtpButton">
+                                    Resend OTP
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="dateOfBirth">Date of Birth</label>
-                            <input id="dateOfBirth" type="date">
+                        <div id="profileSection"
+                             class="profile-section"
+                             style="display:none">
+                            <p id="verifiedEmailMessage"
+                               class="verified-message"></p>
+
+                            <div class="register-fields">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input id="fullName" type="text"
+                                           maxlength="100"
+                                           autocomplete="name"
+                                           placeholder="Enter your full name"
+                                           required disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="dateOfBirth">Date of Birth</label>
+                                    <input id="dateOfBirth" type="date"
+                                           autocomplete="bday" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="gender">Gender</label>
+                                    <select id="gender" disabled>
+                                        <option value="">Select gender (optional)</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                        <option value="Prefer not to say">Prefer not to say</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input id="address" type="text"
+                                           maxlength="255"
+                                           autocomplete="street-address"
+                                           placeholder="House number, street"
+                                           disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input id="city" type="text" maxlength="50"
+                                           autocomplete="address-level2"
+                                           placeholder="Enter city" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <input id="state" type="text" maxlength="50"
+                                           autocomplete="address-level1"
+                                           placeholder="Enter state" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="pincode">PIN Code</label>
+                                    <input id="pincode" type="text"
+                                           maxlength="10"
+                                           inputmode="numeric"
+                                           autocomplete="postal-code"
+                                           placeholder="Enter PIN code" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password">Create Password</label>
+                                    <input id="password" type="password"
+                                           minlength="8" maxlength="128"
+                                           autocomplete="new-password"
+                                           placeholder="At least 8 characters"
+                                           required disabled>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="login-button"
+                                    id="createAccountButton">
+                                Create Civilian Account
+                            </button>
                         </div>
 
-                        <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <input id="gender" type="text" placeholder="Optional">
-                        </div>
+                        <p id="statusMessage" class="status"
+                           role="status" aria-live="polite"></p>
+                    </form>
 
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <input id="address" type="text">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="city">City</label>
-                            <input id="city" type="text">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="state">State</label>
-                            <input id="state" type="text">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="pincode">Pincode</label>
-                            <input id="pincode" type="text" maxlength="10">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password">CRMS Password</label>
-                            <input id="password" type="password" minlength="8" required>
-                        </div>
-
-                        <button type="submit" class="login-button">
-                            Create Civilian Account
-                        </button>
-                    </div>
-
-                    <p id="statusMessage" class="status"></p>
-                </form>
+                    <p class="register-footer">
+                        Already have an account?
+                        <a href="index.html">Sign in</a>
+                    </p>
+                </div>
 
                 <p class="footer-text">
-                    Already registered? <a href="index.html">Back to login</a>
+                    Crime Record Management System · 2026
                 </p>
             </div>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script>
-        firebase.initializeApp(FIREBASE_CONFIG);
-    </script>
-    <script src="js/register.js"></script>
+    <script src="js/register.js?v=3"></script>
 </body>
 </html>

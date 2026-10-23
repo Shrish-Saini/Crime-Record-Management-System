@@ -127,43 +127,39 @@ async function loadCases() {
         }
 
 
-        container.innerHTML = cases.map(caseItem => `
-
-            <div class="civilian-case">
-
-                <h3>
-                    ${caseItem.case_title || "Untitled Case"}
-                </h3>
-
-                <p>
-                    <strong>Case ID:</strong>
-                    ${caseItem.case_id}
-                </p>
-
-                <p>
-                    <strong>Status:</strong>
-                    ${caseItem.status || "N/A"}
-                </p>
-
-                <p>
-                    <strong>Start Date:</strong>
-                    ${caseItem.start_date || "N/A"}
-                </p>
-
-                <p>
-                    <strong>Outcome:</strong>
-                    ${caseItem.outcome || "Pending"}
-                </p>
-
-                <button
-                    type="button"
-                    onclick="viewCase(${caseItem.case_id})">
-                    View Case
-                </button>
-
+        container.innerHTML = `
+            <div class="case-table-wrapper">
+                <table class="case-table">
+                    <thead>
+                        <tr>
+                            <th>Case ID</th>
+                            <th>Case Title</th>
+                            <th>Start Date</th>
+                            <th>Status</th>
+                            <th>Legal Outcome</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${cases.map(caseItem => `
+                            <tr>
+                                <td>${caseItem.case_id ?? "-"}</td>
+                                <td class="case-title-cell">${caseItem.case_title || "Untitled Case"}</td>
+                                <td>${caseItem.start_date || "N/A"}</td>
+                                <td><span class="case-status">${caseItem.status || "N/A"}</span></td>
+                                <td>${caseItem.outcome || "Pending"}</td>
+                                <td>
+                                    <button type="button" class="case-view-button"
+                                        onclick="viewCase(${Number(caseItem.case_id)})">
+                                        View Case
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
             </div>
-
-        `).join("");
+        `;
 
 
     } catch (error) {
