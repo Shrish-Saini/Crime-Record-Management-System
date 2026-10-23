@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRMS | Superintendent</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/superintendent.css">
+</head>
+<body>
+
+<div class="police-layout superintendent-layout">
+
+    <aside class="police-sidebar superintendent-sidebar">
+        <div class="sidebar-logo">
+            <img src="assets/crms-logo.png" alt="CRMS Logo">
+        </div>
+
+        <h2>Crime Record<br>Management<br>System</h2>
+
+        <p class="sidebar-description">
+            Senior officer portal for case supervision,
+            personnel management and transfer records.
+        </p>
+
+        <div class="sidebar-section">
+            <h4>SUPERINTENDENT PORTAL</h4>
+            <p>Case allocation, officer oversight and transfer records.</p>
+        </div>
+
+        <nav class="super-nav">
+            <a href="#overview">Overview</a>
+            <a href="#cases">Case Management</a>
+            <a href="#officers">Officer Directory</a>
+            <a href="#transfers">Transfer Records</a>
+            <a href="#legal">Legal Records</a>
+        </nav>
+
+        <button type="button" class="sidebar-logout" onclick="logout()">
+            Logout
+        </button>
+    </aside>
+
+    <main class="police-main superintendent-main">
+        <section class="page-content">
+
+            <header class="page-header super-header">
+                <div>
+                    <p>SUPERINTENDENT PORTAL</p>
+                    <h1>Senior Officer Dashboard</h1>
+                    <p>Case allocation, station oversight and police personnel records.</p>
+                </div>
+
+                <div class="super-profile">
+                    <small>SIGNED IN AS</small>
+                    <strong id="superintendentName">Manik Mishra</strong>
+                    <span>Superintendent</span>
+                </div>
+            </header>
+
+            <div id="notice" class="super-notice" hidden></div>
+
+            <section id="overview" class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h2>Command Overview</h2>
+                        <p>Live counts from the API.</p>
+                    </div>
+                    <button id="refreshBtn" type="button" class="super-secondary">
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="super-stats">
+                    <article>
+                        <span>Total Cases</span>
+                        <strong id="caseCount">—</strong>
+                    </article>
+                    <article>
+                        <span>Pending / Ongoing</span>
+                        <strong id="pendingCount">—</strong>
+                    </article>
+                    <article>
+                        <span>Police Officers</span>
+                        <strong id="officerCount">—</strong>
+                    </article>
+                    <article>
+                        <span>Police Stations</span>
+                        <strong id="stationCount">—</strong>
+                    </article>
+                </div>
+            </section>
+
+            <section id="cases" class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h2>Case Management</h2>
+                        <p>Assign, reassign or remove an investigating officer.</p>
+                    </div>
+                </div>
+
+                <div class="super-filters">
+                    <input id="caseSearch" type="search"
+                           placeholder="Search case title or ID">
+                    <select id="statusFilter">
+                        <option value="">All statuses</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="pending">Pending</option>
+                        <option value="closed">Closed</option>
+                        <option value="solved">Solved</option>
+                    </select>
+                </div>
+
+                <div class="super-table-wrap">
+                    <table class="super-table">
+                        <thead>
+                            <tr>
+                                <th>Case</th>
+                                <th>Status</th>
+                                <th>Start Date</th>
+                                <th>Outcome</th>
+                                <th>Current IO</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="casesBody">
+                            <tr><td colspan="6">Loading cases...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="officers" class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h2>Officer Directory</h2>
+                        <p>Personnel rank, badge, station and status.</p>
+                    </div>
+                </div>
+
+                <input id="officerSearch" class="super-search"
+                       type="search" placeholder="Search officers">
+
+                <div class="super-table-wrap">
+                    <table class="super-table">
+                        <thead>
+                            <tr>
+                                <th>Officer</th>
+                                <th>Rank</th>
+                                <th>Badge</th>
+                                <th>Station</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="officersBody">
+                            <tr><td colspan="5">Loading officers...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="transfers" class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h2>Officer Transfer Records</h2>
+                        <p>Review previous postings and record new transfers.</p>
+                    </div>
+                </div>
+
+                <div class="transfer-form">
+                    <label>
+                        Officer
+                        <select id="transferOfficer">
+                            <option value="">Select officer</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Destination Station
+                        <select id="transferStation">
+                            <option value="">Select station</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Transfer Date
+                        <input id="transferDate" type="date">
+                    </label>
+
+                    <label>
+                        Remarks
+                        <input id="transferRemarks" maxlength="255"
+                               placeholder="Reason / order reference">
+                    </label>
+                </div>
+
+                <button id="recordTransferBtn" type="button">
+                    Record Transfer
+                </button>
+
+                <div class="super-table-wrap">
+                    <table class="super-table">
+                        <thead>
+                            <tr>
+                                <th>Officer</th>
+                                <th>Previous Station</th>
+                                <th>New Station</th>
+                                <th>Date</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transfersBody">
+                            <tr><td colspan="5">Loading transfer history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="legal" class="content-card">
+                <div class="card-header">
+                    <div>
+                        <h2>Legal Records</h2>
+                        <p>Existing CRMS legal-record pages.</p>
+                    </div>
+                </div>
+
+                <div class="legal-links">
+                    <a href="bns-sections.html">BNS Sections</a>
+                    <a href="courts.html">Courts & Proceedings</a>
+                    <a href="cases.html">Full Case Records</a>
+                </div>
+            </section>
+
+        </section>
+    </main>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/superintendent.js"></script>
+</body>
+</html>

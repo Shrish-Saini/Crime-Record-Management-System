@@ -18,6 +18,7 @@ from sqlalchemy.exc import DataError, IntegrityError, StatementError
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.sqltypes import BigInteger, Integer, SmallInteger
 
+
 from database import engine, get_db
 
 
@@ -213,17 +214,228 @@ def _execute_write(db: Session, statement: Any, action: str, table_name: str):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid {table_name} data") from exc
 
 
+
 def _register_single_key_resource(table_name: str, label: str) -> None:
     table = metadata.tables[table_name]
     primary_keys = list(table.primary_key.columns)
+
     if len(primary_keys) != 1:
-        raise RuntimeError(f"{table_name} requires a dedicated composite-key router")
+        raise RuntimeError(
+            f"{table_name} requires a dedicated composite-key router"
+        )
 
     primary_key = primary_keys[0]
     route_prefix = "/" + table_name.replace("_", "-")
-    response_schema = _schema_for(table, f"{table_name.title().replace('_', '')}Response", mode="response")
-    create_schema = _schema_for(table, f"{table_name.title().replace('_', '')}Create", mode="create")
-    update_schema = _schema_for(table, f"{table_name.title().replace('_', '')}Update", mode="update")
+
+    schema_name = table_name.title().replace("_", "")
+    response_schema = _schema_for(
+        table, f"{schema_name}Response", mode="response"
+    )
+    create_schema = _schema_for(
+        table, f"{schema_name}Create", mode="create"
+    )
+    update_schema = _schema_for(
+        table, f"{schema_name}Update", mode="update"
+    )
+
+    def list_records(
+        skip: int = Query(default=0, ge=0),
+        limit: int = Query(default=100, ge=1, le=500),
+        db: Session = Depends(get_db),
+        current_user=Depends(get_current_user),
+    ):
+        
+        if table_name == "users":
+            require_role(current_user, ["admin", "superintendent"])
+
+        if table_name == "police_officers":
+            if current_user["role"] == "police_officer":
+                raise HTTPException(
+                    status_code=403,
+                    detail="Police officers cannot list personnel records",
+                )
+            require_role(current_user, ["admin", "superintendent"])
+
+
+        records = db.execute(
+            select(table).offset(skip).limit(limit)
+        ).mappings().all()
+
+        return [_serialize(dict(record)) for record in records]
+
+    def get_record(
+        record_id: int,
+        db: Session = Depends(get_db),
+        current_user=Depends(get_current_user),
+    ):
+        if table_name == "users":
+            require_role(current_user, ["superintendent"])
+
+        if table_name == "police_officers":
+            if current_user["role"] == "police_officer":
+                if record_id != current_user["officer_id"]:
+                    raise HTTPException(
+                        status_code=403,
+                        detail="You can only access your own officer record",
+                    )
+            else:
+                require_role(current_user, ["superintendent"])
+
+        record = _get_record_or_404(
+            db, table, primary_key, record_id
+        )
+
+        require_resource_access(
+            table_name, record, current_user, db
+        )
+
+        if table_name == "police_officers":
+            transfer = db.execute(
+                text("""
+                    SELECT
+                        ps.station_name AS transferred_from,
+                        ot.transfer_date
+                    FROM officer_transfers ot
+                    JOIN police_stations ps
+                        ON ps.station_id = ot.from_station_id
+                    WHERE ot.officer_id = :officer_id
+                    ORDER BY ot.transfer_date DESC,
+                             ot.transfer_id DESC
+                    LIMIT 1
+                """),
+                {"officer_id": record_id},
+            ).mappings().first()
+
+            result = _serialize(record)
+            result["transferred_from"] = (
+                transfer["transferred_from"] if transfer else None
+            )
+            result["transfer_date"] = (
+                str(transfer["transfer_date"]) if transfer else None
+            )
+            return result
+
+        return _serialize(record)
+
+    def create_record(
+        payload: create_schema,
+        db: Session = Depends(get_db),
+        current_user=Depends(get_current_user),
+    ):
+        require_write_access(current_user)
+        values = payload.model_dump(exclude_unset=True)
+        result = _execute_write(
+            db, insert(table).values(**values), "create", table_name
+        )
+        inserted_id = result.inserted_primary_key[0]
+        return _serialize(
+            _get_record_or_404(db, table, primary_key, inserted_id)
+        )
+
+    def update_record(
+        record_id: int,
+        payload: update_schema,
+        db: Session = Depends(get_db),
+        current_user=Depends(get_current_user),
+    ):
+        require_write_access(current_user)
+        _get_record_or_404(db, table, primary_key, record_id)
+        values = payload.model_dump(exclude_unset=True)
+
+        if not values:
+            raise HTTPException(
+                status_code=400,
+                detail="Provide at least one field to update",
+            )
+
+        if any(
+            value is None and not table.c[key].nullable
+            for key, value in values.items()
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail="Required fields cannot be null",
+            )
+
+        _execute_write(
+            db,
+            update(table).where(primary_key == record_id).values(**values),
+            "update",
+            table_name,
+        )
+        return _serialize(
+            _get_record_or_404(db, table, primary_key, record_id)
+        )
+
+    def delete_record(
+        record_id: int,
+        db: Session = Depends(get_db),
+        current_user=Depends(get_current_user),
+    ):
+        require_write_access(current_user)
+        record = _get_record_or_404(
+            db, table, primary_key, record_id
+        )
+        require_resource_access(
+            table_name, record, current_user, db, write=True
+        )
+        _execute_write(
+            db,
+            delete(table).where(primary_key == record_id),
+            "delete",
+            table_name,
+        )
+        return {"detail": f"{label} deleted"}
+
+    router.add_api_route(
+        route_prefix + "/",
+        list_records,
+        methods=["GET"],
+        response_model=List[response_schema],
+        name=f"list_{table_name}",
+        summary=f"List {label}",
+    )
+
+    router.add_api_route(
+        route_prefix + "/{record_id}",
+        get_record,
+        methods=["GET"],
+        response_model=response_schema,
+        name=f"get_{table_name}",
+        summary=f"Get {label} by ID",
+    )
+
+    if table_name in READ_ONLY_TABLES:
+        return
+
+    router.add_api_route(
+        route_prefix + "/",
+        create_record,
+        methods=["POST"],
+        response_model=response_schema,
+        status_code=status.HTTP_201_CREATED,
+        name=f"create_{table_name}",
+        summary=f"Create {label}",
+    )
+
+    for method in ("PUT", "PATCH"):
+        router.add_api_route(
+            route_prefix + "/{record_id}",
+            update_record,
+            methods=[method],
+            response_model=response_schema,
+            name=f"{method.lower()}_{table_name}",
+            summary=f"Update {label}",
+        )
+
+    router.add_api_route(
+        route_prefix + "/{record_id}",
+        delete_record,
+        methods=["DELETE"],
+        name=f"delete_{table_name}",
+        summary=f"Delete {label}",
+    )
+
 def list_records(
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
@@ -275,7 +487,37 @@ def list_records(
                 db
             )
 
+       
+        if table_name == "police_officers":
+            transfer = db.execute(
+                text("""
+                    SELECT
+                        ps.station_name AS transferred_from,
+                        ot.transfer_date
+                    FROM officer_transfers ot
+                    JOIN police_stations ps
+                        ON ps.station_id = ot.from_station_id
+                    WHERE ot.officer_id = :officer_id
+                    ORDER BY ot.transfer_date DESC,
+                             ot.transfer_id DESC
+                    LIMIT 1
+                """),
+                {"officer_id": record_id}
+            ).mappings().first()
+
+            result = _serialize(record)
+
+            result["transferred_from"] = (
+                transfer["transferred_from"] if transfer else None
+            )
+            result["transfer_date"] = (
+                str(transfer["transfer_date"]) if transfer else None
+            )
+
+            return result
+
         return _serialize(record)
+
 
     router.add_api_route(
         route_prefix + "/",

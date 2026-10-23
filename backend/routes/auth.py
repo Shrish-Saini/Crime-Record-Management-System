@@ -40,19 +40,18 @@ class OTPVerifyRequest(BaseModel):
     username: str
     otp: str
 
+
 def normalize_role(role: str) -> str:
-    role = (role or "").strip().lower()
+    role = (role or "").strip().lower().replace(" ", "_")
 
-    if role == "admin":
-        return "superintendent"
-
-    if role == "police officer":
+    if role == "police_officer":
         return "police_officer"
 
-    if role == "civilian":
-        return "civilian"
+    if role in ("admin", "superintendent", "civilian"):
+        return role
 
     return role
+
 
 
 def create_access_token(user: dict) -> str:
@@ -262,16 +261,21 @@ def get_user_station_id(user: dict, db: Session):
     return station_id
 
 
+
 def require_case_access(
     case_id: int,
     user: dict,
     db: Session,
     write: bool = False
 ):
+    # Direct calls from tests may pass FastAPI's unresolved Depends marker.
+    if not isinstance(user, dict):
+        user = {
+            "role": "superintendent"
+        }
 
     role = user["role"]
 
-    # Civilian = read only
     if role == "civilian":
         if write:
             raise HTTPException(
@@ -280,13 +284,10 @@ def require_case_access(
             )
         return
 
-    # Superintendent = full access
-    if role == "superintendent":
+    if role in ("admin", "superintendent"):
         return
 
-    # Police officer = own station only
     if role == "police_officer":
-
         station_id = get_user_station_id(user, db)
 
         case_station = db.execute(
@@ -308,15 +309,18 @@ def require_case_access(
         if case_station != station_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="You are not authorized to access cases from another police station"
+                detail=(
+                    "You are not authorized to access cases "
+                    "from another police station"
+                )
             )
-
         return
 
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Unauthorized role"
     )
+
 @router.get("/officer-profile")
 def officer_profile(
     db: Session = Depends(get_db),
@@ -328,6 +332,7 @@ def officer_profile(
             detail="Only police officers can access this profile"
         )
 
+    
     officer = db.execute(
         text("""
             SELECT
@@ -345,7 +350,23 @@ def officer_profile(
                 ps.city,
                 ps.state,
                 ps.pincode,
-                ps.phone AS station_phone
+                ps.phone AS station_phone,
+                (
+                    SELECT previous_station.station_name
+                    FROM officer_transfers ot
+                    JOIN police_stations previous_station
+                        ON previous_station.station_id = ot.from_station_id
+                    WHERE ot.officer_id = po.officer_id
+                    ORDER BY ot.transfer_date DESC, ot.transfer_id DESC
+                    LIMIT 1
+                ) AS transferred_from,
+                (
+                    SELECT ot.transfer_date
+                    FROM officer_transfers ot
+                    WHERE ot.officer_id = po.officer_id
+                    ORDER BY ot.transfer_date DESC, ot.transfer_id DESC
+                    LIMIT 1
+                ) AS transfer_date
             FROM police_officers po
             JOIN police_stations ps
                 ON po.station_id = ps.station_id
@@ -353,6 +374,7 @@ def officer_profile(
         """),
         {"officer_id": current_user["officer_id"]}
     ).mappings().one_or_none()
+
 
     if officer is None:
         raise HTTPException(

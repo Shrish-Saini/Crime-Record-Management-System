@@ -53,6 +53,7 @@ def get_cases(
     investigating_officer_id: Optional[int] = Query(default=None, gt=0),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
+    assigned_to_me: bool = Query(default=False),
 ):
     query = db.query(Case)
 
@@ -73,9 +74,23 @@ def get_cases(
                 status_code=403,
                 detail="Police officer is not assigned to a station"
             )
+        officer_condition = (
+            "AND c.investigating_officer_id = :officer_id"
+            if assigned_to_me
+            else ""
+        )
+
+        params = {
+            "station_id": station_id,
+            "limit": limit,
+            "skip": skip
+        }
+
+        if assigned_to_me:
+            params["officer_id"] = current_user["officer_id"]
 
         cases = db.execute(
-            text("""
+            text(f"""
                 SELECT
                     c.case_id,
                     c.fir_id,
@@ -89,16 +104,12 @@ def get_cases(
                 FROM cases c
                 INNER JOIN fir f ON c.fir_id = f.fir_id
                 WHERE f.station_id = :station_id
+                {officer_condition}
                 ORDER BY c.case_id
                 LIMIT :limit OFFSET :skip
             """),
-            {
-                "station_id": station_id,
-                "limit": limit,
-                "skip": skip
-            }
+            params
         ).mappings().all()
-
         return [dict(row) for row in cases]
     if status_filter:
         query = query.filter(Case.status == status_filter)
@@ -632,12 +643,10 @@ def get_case_imprisonment(case_id: int, db: Session = Depends(get_db), current_u
 
 @router.get("/{case_id}/details")
 def get_case_details(case_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    case = require_case_access(
-    case_id,
-    current_user,
-    db,
-    write=False
-)
+    case = db.query(Case).filter(Case.case_id == case_id).first()
+    if case is None:
+        raise HTTPException(status_code=404, detail="Case not found")
+    require_case_access(case_id, current_user, db, write=False)
     fir = get_case_fir(case_id, db)
     officer = _query_row(
         db,
@@ -684,4 +693,150 @@ def get_case_details(case_id: int, db: Session = Depends(get_db), current_user=D
         "fir": fir,
         "investigating_officer": officer,
         "summary": summary,
+    }
+
+@router.put("/{case_id}/assign")
+def assign_case(
+    case_id: int,
+    officer_id: int = Query(..., gt=0),
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    if current_user["role"] not in ("admin", "superintendent"):
+        raise HTTPException(
+            status_code=403,
+            detail="Only a superintendent can assign cases"
+        )
+
+    case = _get_case_or_404(case_id, db)
+
+    officer = db.execute(
+        text("""
+            SELECT officer_id, station_id
+            FROM police_officers
+            WHERE officer_id = :officer_id
+        """),
+        {"officer_id": officer_id}
+    ).mappings().one_or_none()
+
+    if officer is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Police officer not found"
+        )
+
+    case_station = db.execute(
+        text("""
+            SELECT station_id
+            FROM fir
+            WHERE fir_id = :fir_id
+        """),
+        {"fir_id": case.fir_id}
+    ).scalar()
+
+    if officer["station_id"] != case_station:
+        raise HTTPException(
+            status_code=400,
+            detail="Officer and case must belong to the same police station"
+        )
+
+    
+    old_officer_id = case.investigating_officer_id
+
+    # Close the previous assignment, if one exists
+    if old_officer_id is not None:
+        db.execute(
+            text("""
+                UPDATE case_assignment_history
+                SET unassigned_at = CURRENT_TIMESTAMP
+                WHERE case_id = :case_id
+                AND officer_id = :officer_id
+                AND unassigned_at IS NULL
+            """),
+            {
+                "case_id": case_id,
+                "officer_id": old_officer_id
+            }
+        )
+
+    # Record the new assignment
+    db.execute(
+        text("""
+            INSERT INTO case_assignment_history (
+                case_id,
+                officer_id,
+                assigned_by_user_id,
+                remarks
+            )
+            VALUES (
+                :case_id,
+                :officer_id,
+                :assigned_by_user_id,
+                :remarks
+            )
+        """),
+        {
+            "case_id": case_id,
+            "officer_id": officer_id,
+            "assigned_by_user_id": current_user["user_id"],
+            "remarks": "Case assigned or reassigned"
+        }
+    )
+
+    case.investigating_officer_id = officer_id
+    db.commit()
+
+
+    return {
+        "message": "Case assigned successfully",
+        "case_id": case_id,
+        "previous_officer_id": old_officer_id,
+        "investigating_officer_id": officer_id
+    }
+
+
+@router.delete("/{case_id}/assign")
+def remove_case_assignment(
+    case_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    if current_user["role"] != "superintendent":
+        raise HTTPException(
+            status_code=403,
+            detail="Only a superintendent can remove case assignments"
+        )
+
+    case = _get_case_or_404(case_id, db)
+    previous_officer_id = case.investigating_officer_id
+
+    if previous_officer_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail="This case has no assigned investigating officer"
+        )
+
+    
+    db.execute(
+        text("""
+            UPDATE case_assignment_history
+            SET unassigned_at = CURRENT_TIMESTAMP
+            WHERE case_id = :case_id
+            AND officer_id = :officer_id
+            AND unassigned_at IS NULL
+        """),
+        {
+            "case_id": case_id,
+            "officer_id": previous_officer_id
+        }
+    )
+
+    case.investigating_officer_id = None
+    db.commit()
+
+
+    return {
+        "message": "Case assignment removed successfully",
+        "case_id": case_id,
+        "previous_officer_id": previous_officer_id
     }
